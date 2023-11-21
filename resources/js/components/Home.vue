@@ -36,17 +36,46 @@
                     </div>
 
                     <div class="search-export">
-                        <input
-                            v-model="searchTerm"
-                            class="searchForm"
-                            placeholder="Search"
-                        />
+                        <!--Source search dari dari internet, https://uiverse.io/krlozCJ/splendid-starfish-73-->
+                        <div class="searchContainer">
+                            <input
+                                v-model="searchTerm"
+                                type="text"
+                                name="text"
+                                class="input"
+                                required=""
+                                placeholder="Type to search..."
+                            />
+                            <div class="icon">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="ionicon"
+                                    viewBox="0 0 512 512"
+                                >
+                                    <title>Search</title>
+                                    <path
+                                        d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-miterlimit="10"
+                                        stroke-width="32"
+                                    ></path>
+                                    <path
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-linecap="round"
+                                        stroke-miterlimit="10"
+                                        stroke-width="32"
+                                        d="M338.29 338.29L448 448"
+                                    ></path>
+                                </svg>
+                            </div>
+                        </div>
 
                         <button
                             type="button"
                             class="export-button"
                             onclick="modify"
-                            @click="exportToExcel"
                         >
                             <font-awesome-icon
                                 :icon="['fas', 'file-export']"
@@ -59,14 +88,39 @@
             </div>
 
             <div class="card2-container card">
-                <button
-                    type="button"
-                    @click="create3rdParty"
-                    class="create-third-party"
-                >
-                    <font-awesome-icon :icon="['fas', 'plus']" />
-                    Create 3rd Party Instruction
-                </button>
+                <div class="dropdown-trigger">
+                    <button
+                        type="button"
+                        @click="toggleDropdown"
+                        class="create-third-party"
+                    >
+                        <font-awesome-icon :icon="['fas', 'plus']" />
+                        Create 3rd Party Instruction
+                    </button>
+                    <div
+                        v-if="isDropdownVisible"
+                        class="dropdown"
+                        ref="dropdown"
+                    >
+                        <ul class="dropdownActive">
+                            <li @click="selectOption('LI')" class="options">
+                                <font-awesome-icon
+                                    :icon="['fas', 'truck']"
+                                    class="icons"
+                                />
+                                Logistic Instruction
+                            </li>
+                            <li @click="selectOption('SI')" class="options">
+                                <font-awesome-icon
+                                    :icon="['fas', 'user-pen']"
+                                    class="icons"
+                                />
+                                Service Instruction
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
                 <table>
                     <thead>
                         <tr>
@@ -337,6 +391,7 @@
                             <tr
                                 v-for="product in sortedProducts"
                                 :key="product.id"
+                                @click ="toDetailPage(product.id)"
                             >
                                 <td class="products">
                                     {{ product.id }}
@@ -386,6 +441,7 @@ export default {
             sortBy: "id", // Default sort column
             sortOrder: "asc", // Default sort order
             searchTerm: "",
+            isDropdownVisible: false,
         };
     },
 
@@ -472,34 +528,38 @@ export default {
             }
             console.log("isi sortOrder luar else : ", this.sortOrder);
         },
-        exportToExcel() {
-            // Pastikan Anda sudah memiliki sortedProducts yang akan di-export
 
-            console.log('isi dari tabel saat export', this.sortedProducts)
-            // Konfigurasi untuk pembuatan file Excel
-            const ws = XLSX.utils.json_to_sheet(this.sortedProducts);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        toggleDropdown() {
+            this.isDropdownVisible = !this.isDropdownVisible;
 
-            // Membuat file Excel dalam bentuk blob
-            const blob = XLSX.write(wb, { bookType: "xlsx", type: "blob" });
+            /*//tambahin kondisi saat dropdown true, semua aktivitas diluar elemen dropdown akan membuat dropdown hilang
+            if (this.isDropdownVisible){
+                document.addEventListener("click", this.handleClickOutside);
+            }else{
+                document.removeEventListener("click", this.handleClickOutside)
+            }*/
 
-            // Membuat URL untuk blob
-            const url = URL.createObjectURL(blob);
-
-            // Membuat elemen <a> untuk mendownload file
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "exported_data.xlsx";
-
-            // Men-trigger klik pada elemen <a> untuk memulai proses download
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            // Membersihkan URL objek setelah download selesai
-            URL.revokeObjectURL(url);
+            console.log("dropdown? ", this.isDropdownVisible);
         },
+
+        /*handleClickOutside(event) {
+            //nyari ref dengan nilai dropdown
+            const dropdown = this.$refs.dropdown;
+
+            console.log("nilai dropdown", dropdown);
+
+            if (dropdown && !dropdown.contains(event.target)) {
+                this.isDropdownVisible = false;
+                document.removeEventListener("click", this.handleClickOutside);
+            }
+        },*/
+
+        toDetailPage(productId){
+            this.$router.push({ name: "detail", params:{id : productId} });
+                console.log("response")
+        },
+
+        selectOption(option) {},
     },
     components: {
         navbar: Navbar,
@@ -579,6 +639,64 @@ export default {
     transition: ease-in-out;
 }
 
+.searchForm {
+}
+
+.searchContainer {
+    position: relative;
+    --size-button: 25px;
+    color: black;
+}
+
+.input {
+    padding-left: var(--size-button);
+    height: var(--size-button);
+    font-size: 12px;
+    border: none;
+    color: black;
+    outline: none;
+    width: var(--size-button);
+    transition: all ease 0.3s;
+    background-color: #ffffff; /* Ganti dengan warna putih atau warna cerah lainnya */
+    box-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.1),
+        -1.5px -1.5px 3px rgba(0, 0, 0, 0.1),
+        inset 0px 0px 0px rgba(0, 0, 0, 0.1),
+        inset 0px -0px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.input:focus,
+.input:not(:invalid) {
+    width: 200px;
+    cursor: text;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1),
+        inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.1),
+        inset -1.5px -1.5px 3px rgba(0, 0, 0, 0.1);
+}
+
+.input:focus + .icon,
+.input:not(:invalid) + .icon {
+    pointer-events: all;
+    cursor: pointer;
+    
+}
+
+.searchContainer .icon {
+    position: absolute;
+    width: var(--size-button);
+    height: var(--size-button);
+    bottom: 8%;
+    right: 1%;
+    padding: 4.5px;
+    pointer-events: none;
+}
+
+.searchContainer .icon svg {
+    width: 100%;
+    height: 100%;
+}
+
 .subtitle .vendor-management:hover,
 .subtitle .party-instruction:hover {
     cursor: pointer;
@@ -618,19 +736,55 @@ export default {
     padding-left: 1rem;
 }
 
-.create-third-party {
-    width: 30%;
+.dropdown-trigger {
+    width: fit-content;
     max-width: 17rem;
     margin-left: auto;
     border: none;
-    background-color: var(--third-color);
-    color: white;
+    font-size: smaller;
+
     font-weight: lighter;
     margin-top: 1rem;
     margin-right: 0.5rem;
     margin-bottom: 1rem;
 }
 
+.create-third-party {
+    width: 100%;
+    background-color: white;
+    text-align: left;
+}
+
+.dropdown ul {
+    position: absolute;
+    border: 1px solid black;
+    list-style-type: none;
+    width: 100%;
+    font-size: smaller;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0;
+}
+
+.options {
+    margin: 0;
+    width: 100%;
+    text-align: left;
+    padding: 0.3rem;
+    background: #e0e0e0;
+    box-shadow: 2px 2px 6px #bebebe, -2px -2px 6px #ffffff;
+    cursor: pointer;
+}
+
+.options:hover {
+    background-color: white;
+    transform: scale(1.02);
+}
+
+.options .icons {
+    padding-right: 0.4rem;
+}
 .information-navigation .filterButton .open-button,
 .information-navigation .filterButton .completed-button {
     font-size: 1rem;

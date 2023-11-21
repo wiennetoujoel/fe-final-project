@@ -9,6 +9,9 @@ import {far} from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 
+
+
+
 import store from './store'     
 import routes from './routes'
 
@@ -23,24 +26,14 @@ const router = createRouter({
 })
 
 
-
-import ExampleComponent from './components/ExampleComponent.vue';
-app.component('example-component', ExampleComponent);
-
-import Products from './components/Products.vue';
-app.component('products-component', Products);
-
-import Cart from './components/Cart.vue';
-app.component('cart-component', Cart);
-
 import NotFound from './components/NotFoundComponent.vue';
 app.component ('not-found', NotFound);
 
 import Home from './components/Home.vue';
 app.component ('home', Home);
 
-import Detail from './components/3rdPartyDetail.vue';
-app.component('instruction', Detail)
+import Detail from './components/Detail.vue';
+app.component('detail', Detail)
 
 import Navbar from './components/Navbar.vue';
 app.component('navbar', Navbar)

@@ -22,6 +22,7 @@ Route::get('/getAllData', 'Mocking\Controllers\ExampleController@getData');
 
 
 
+
 Route::post('/postData', 'Mocking\Controllers\ExampleController@postData');
 Route::put('/putData', 'Mocking\Controllers\ExampleController@putData');
 Route::patch('/patchData', 'Mocking\Controllers\ExampleController@patchData');

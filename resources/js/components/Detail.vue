@@ -1,10 +1,8 @@
 <template>
-    <navbar/>
+    <navbar />
 
     <div class="main-container">
-        <sidebar/>
-        
-
+        <sidebar />
         <div class="container">
             <h3 class="container-title">3rd Party Instruction</h3>
             <div class="container-subtitle">
@@ -45,7 +43,7 @@
                         <button
                             type="button"
                             class="back-button"
-                            onclick="backwards"
+                            @click="backwards()"
                         >
                             <font-awesome-icon
                                 :icon="['fas', 'chevron-left']"
@@ -82,40 +80,73 @@
                 <div class="information">
                     <div class="logistic-type card">
                         <div class="information-title">Type</div>
-                        <div class="information-body">Logistic Instruction</div>
+                        <div class="information-body">
+                            <template v-if="filteredProducts.type === 'LI'">
+                                <p>
+                                    <font-awesome-icon
+                                        :icon="['fas', 'truck']"
+                                        class="icons"
+                                        style="color: var(--fifth-color);"
+                                    />
+                                    Logistic Instruction
+                                </p>
+                            </template>
+                            <template
+                                v-else-if="filteredProducts.type === 'SI'"
+                            >
+                                <p>
+                                    <font-awesome-icon
+                                        :icon="['fas', 'user-pen']"
+                                        class="icons"
+                                        style="color: var(--fifth-color);"
+                                    />
+                                    Service Instruction
+                                </p>
+                            </template>
+                        </div>
                     </div>
                     <div class="list-number card">
                         <div class="information-title">Li No.</div>
-                        <div class="information-body">Li-2023-0213</div>
+                        <div class="information-body">
+                            {{ filteredProducts.id }}
+                        </div>
                     </div>
                     <div class="transfer-number card">
                         <div class="information-title">Transfer No.</div>
-                        <div class="information-body">0822216220622</div>
+                        <div class="information-body">
+                            {{ filteredProducts.transferNumber }}
+                        </div>
                     </div>
                     <div class="customer-name card">
                         <div class="information-title">Customer</div>
-                        <div class="information-body">ADNOC-ONSHORE</div>
+                        <div class="information-body">
+                            {{ filteredProducts.customerName }}
+                        </div>
                     </div>
                     <div class="customer-po card">
                         <div class="information-title">Customer PO</div>
-                        <div class="information-body"></div>
+                        <div class="information-body">
+                            {{ filteredProducts.customerPO }}
+                        </div>
                     </div>
                     <div class="status card">
                         <div class="information-title">Status</div>
-                        <div class="information-body">In progress</div>
+                        <div class="information-body">
+                            {{ filteredProducts.status }}
+                        </div>
                     </div>
                 </div>
                 <div class="information">
                     <div class="pic card">
                         <div class="information-title">Attention of</div>
                         <div class="information-body">
-                            Wiennetou Joel Hermesha
+                            {{ filteredProducts.attentionOf }}
                         </div>
                     </div>
                     <div class="vendor card">
                         <div class="information-title">Assigned Vendor</div>
                         <div class="information-body">
-                            Agility (Abu Dhabi) PJSC
+                            {{ filteredProducts.assignedVendor }}
                         </div>
                     </div>
                     <div class="vendor-quitation card">
@@ -123,13 +154,13 @@
                             Vendor Quitation No.
                         </div>
                         <div class="information-body">
-                            MITME-AGL-01 (Appendix 1)
+                            {{ filteredProducts.quotationNumber }}
                         </div>
                     </div>
                     <div class="vendor-address card">
                         <div class="information-title">Vendor Address</div>
                         <div class="information-body">
-                            Permata Pamulang G13 no. 28
+                            {{ filteredProducts.vendorAddress }}
                         </div>
                     </div>
                 </div>
@@ -155,7 +186,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Transportation from Rig-Site</td>
+                            <td>ahahhaha</td>
                             <td>1</td>
                             <td>Trip</td>
                             <td>1400,00</td>
@@ -228,248 +259,268 @@
 </template>
 
 <script>
-
-import Navbar from './Navbar.vue'
-import Sidebar from './Sidebar.vue'
-import {mapGetters} from 'vuex'
+import Navbar from "./Navbar.vue";
+import Sidebar from "./Sidebar.vue";
+import { mapGetters } from "vuex";
 
 export default {
-    data(){
-        return{
-            isExpanded : false
-        }
+    data() {
+        return {
+            isExpanded: false,
+        };
     },
 
-    computed:{
+    props: {
+        //nerima informasi id dari halaman utama
+        id: {
+            type: String,
+            required: true,
+        },
+    },
+
+    created() {
+        this.$store.dispatch("example/getAllData");
+    },
+
+    computed: {
         ...mapGetters({
-            products:"example/getData" //minta ke ExampleController.php
-        })
+            products: "example/getData", //minta ke ExampleController.php
+        }),
+        filteredProducts() {
+            return this.products.find((product) => product.id === this.id);
+        },
     },
-    methods:{
-
+    methods: {
+        backwards() {
+            this.$router.go(-1);
+        },
     },
     components: {
-        "navbar" : Navbar,
-        "sidebar" : Sidebar
+        navbar: Navbar,
+        sidebar: Sidebar,
     },
 };
 </script>
 
 <style scoped>
+:root {
+    --first-color: #1d1a39;
+    --second-color: #451952;
+    --third-color: #662549;
+    --fourth-color: #ae445a;
+    --fifth-color: #f39f5a;
+    ---sixth-color: #e8bcb9;
+}
 
 .main-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  padding-top: min(4rem, 5vw);
-  position: relative;
-  min-width: 970px;
-  background-color: #E8BCB9;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-top: min(4rem, 5vw);
+    position: relative;
+    min-width: 1020px;
+    background-color: #ccc;
 }
 
 .container {
-  min-width: 880px;
-  width: calc(100% - 2rem);
-  background-color: green;
-  margin-right: 0;
-  padding-top: 2rem;
-
+    min-width: 970px;
+    width: calc(100% - 2rem);
+    margin-right: 0;
+    padding-top: 2rem;
+    min-height: 100vh;
 }
 
 .container-title {
-  font-weight: 550;
+    font-weight: 550;
 }
 
 .container-subtitle {
-  display: flex;
-  flex-direction: row;
-  padding-bottom: 1em;
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 1em;
 }
 
 .container-subtitle .subtitle {
-  width: 50%;
-  display: flex;
-  flex-direction: row;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
 }
 
 .container-subtitle .subtitle-buttons {
-  display: flex;
-  justify-content: flex-end;
-  width: 50%;
-  gap: 30px;
+    display: flex;
+    justify-content: flex-end;
+    width: 50%;
+    gap: 30px;
 }
 
 .subtitle .vendor-management {
-  padding-right: 0.55em;
-  opacity: 0.7;
+    padding-right: 0.55em;
+    opacity: 0.7;
 }
 
 .subtitle .party-instruction {
-  padding-left: 0.55em;
-  opacity: 1;
-  transition: ease-in-out;
+    padding-left: 0.55em;
+    opacity: 1;
+    transition: ease-in-out;
 }
 
 .subtitle .vendor-management:hover,
 .subtitle .party-instruction:hover {
-  cursor: pointer;
-  transform: scale(1.01);
-  opacity: 1;
-  text-decoration: underline;
-  color: #662549;
+    cursor: pointer;
+    transform: scale(1.01);
+    opacity: 1;
+    text-decoration: underline;
+    color: #662549;
 }
 
 .subtitle-buttons .email-button,
 .subtitle-buttons .export-button {
-  border: 0.6px solid #ccc;
-  background-color: white;
-  font-size: 90%;
-  font-weight: 400;
+    border: 0.6px solid #ccc;
+    background-color: white;
+    font-size: 90%;
+    font-weight: 400;
 }
 
 .email-button:hover,
 .export-button:hover {
-  font-weight: 500;
-  background-color: #e8bcb9;
-  border: 0.6px solid black;
-  transform: scale(1.01);
-}
-
-.card-container {
-  display: flex;
-  font-size: smaller;
-}
-
-.card-container .information {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.card-container .information .card {
-  flex-grow: 1;
-  flex-basis: 10em;
-}
-
-.card-container .information .vendor-address {
-  flex-grow: 1;
-  flex-basis: 36em;
+    font-weight: 500;
+    background-color: #e8bcb9;
+    border: 0.6px solid black;
+    transform: scale(1.01);
 }
 
 .information-navigation {
-  padding: 1em 0.5em;
-  display: flex;
-  flex-direction: row;
+    padding: 1em 0.5em;
+    display: flex;
+    flex-direction: row;
 }
 
 .information-navigation .backButton {
-  width: 50%;
+    width: 50%;
 }
 
 .information-navigation .terminate-modify {
-  width: 50%;
-  display: flex;
-  justify-content: flex-end;
-  gap: 30px;
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px;
 }
 
 .back-button,
 .terminate-button,
 .modify-button {
-  background-color: transparent;
-  border: none;
-
+    background-color: transparent;
+    border: none;
 }
 
 .back-button:hover,
 .terminate-button:hover,
 .modify-button:hover {
-  transform: scale(1.05);
-
+    transform: scale(1.05);
 }
 
+.card-container {
+    display: flex;
+    font-size: smaller;
+}
+
+.card-container .information {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.card-container .information .card {
+    flex-grow: 1;
+    width: 16.66667%;
+    border: none;
+}
+
+.card-container .information .vendor-address {
+    flex-grow: 1;
+    width: 50%;
+}
 
 .information-title {
-  display: flex;
-  padding: 0 1em;
-  min-width: 11vw;
-  width: 100%;
-  justify-content: flex-start;
-  text-align: left;
-  background-color: yellow;
+    display: flex;
+    padding: 0 1em;
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+    color: rgb(97, 95, 95) ccc;
+    font-size: x-small;
 }
 
 .information-body {
-  display: flex;
-  justify-content: flex-start;
-  text-align: left;
-
-  padding: 0 1em;
+    display: flex;
+    justify-content: flex-start;
+    text-align: left;
+    font-weight: 600;
+    padding: 0 1em;
 }
 
 .vendor-address {
-  width: 33.5vw;
 }
 
 .vendor-address .information-title {
-  width: 100%;
+    width: 100%;
 }
-
-
 
 .card2-container {
-  display: flex;
-  font-size: smaller;
+    display: flex;
+    font-size: smaller;
 }
 
-
 .attachment-notes {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .attachment-notes .attachment {
-  width: 50%;
+    width: 50%;
 }
 
 .vendor-invoice {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .vendor-invoice .vendor-title {
-  width: 60%;
+    width: 60%;
 }
 
 .card3-container {
-  display: flex;
+    display: flex;
 }
 
 .card3-container .card3-body {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .card3-container .card3-body .attachment-internal {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
 }
-
 
 .card3-container .card3-body .internal-note {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
 }
 
-@media (max-width: 760px) {}
-
-@media(min-width: 1600px) {
-  .container {
-    justify-content: flex-start;
-    margin: 0 auto;
-  }
+@media (max-width: 760px) {
 }
 
+@media (min-width: 1600px) {
+    .container {
+        justify-content: flex-start;
+        margin: 0 auto;
+    }
+
+    .information-title {
+        min-width: 0vw;
+    }
+}
 </style>

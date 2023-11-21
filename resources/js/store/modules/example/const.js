@@ -1,6 +1,6 @@
 const getDefaultState = () => {
 	return {
-		data: [],
+		data: []
 	}
 }
 

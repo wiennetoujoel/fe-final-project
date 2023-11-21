@@ -391,13 +391,28 @@
                             <tr
                                 v-for="product in sortedProducts"
                                 :key="product.id"
-                                @click ="toDetailPage(product.id)"
+                                @click="toDetailPage(product.id)"
                             >
                                 <td class="products">
                                     {{ product.id }}
                                 </td>
                                 <td class="products">
-                                    {{ product.transferNumber }}
+                                    <span
+                                        v-for="(
+                                            transfer, index
+                                        ) in product.transferNumber"
+                                        :key="index"
+                                    >
+                                        {{ transfer["transfer" + (index + 1)] }}
+
+                                        <!--pemberian tanda koma dan spasi-->
+                                        {{
+                                            index <
+                                            product.transferNumber.length - 1
+                                                ? ", "
+                                                : ""
+                                        }}
+                                    </span>
                                 </td>
                                 <td class="products">
                                     {{ product.type }}
@@ -453,6 +468,7 @@ export default {
         ...mapGetters({
             products: "example/getData", //minta ke ExampleController.php
         }),
+
         filteredProducts() {
             return this.products.filter((product) =>
                 this.filterStatus.includes(product.status)
@@ -480,9 +496,11 @@ export default {
                     // pencarian berdasarkan kriteria
                     return (
                         product.id.toLowerCase().includes(searchLowerCase) ||
-                        product.transferNumber
-                            .toLowerCase()
-                            .includes(searchLowerCase) ||
+                        product.transferNumber.some((transfer) =>
+                            Object.values(transfer).some((value) =>
+                                value.toLowerCase().includes(searchLowerCase)
+                            )
+                        ) ||
                         product.type.toLowerCase().includes(searchLowerCase) ||
                         product.assignedVendor
                             .toLowerCase()
@@ -554,9 +572,9 @@ export default {
             }
         },*/
 
-        toDetailPage(productId){
-            this.$router.push({ name: "detail", params:{id : productId} });
-                console.log("response")
+        toDetailPage(productId) {
+            this.$router.push({ name: "detail", params: { id: productId } });
+            console.log("response");
         },
 
         selectOption(option) {},
@@ -679,7 +697,6 @@ export default {
 .input:not(:invalid) + .icon {
     pointer-events: all;
     cursor: pointer;
-    
 }
 
 .searchContainer .icon {

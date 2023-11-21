@@ -1,7 +1,7 @@
 [
     {
       "id": "LI-2021-0278",
-      "transferNumber": "TRF-2022-0001",
+      "transferNumber": [{"transfer1" : "TRF-2022-0001"},{"transfer2" : "TRF-2022-0002"}],
       "type": "LI",
       "assignedVendor": "X- Transport",
       "attentionOf": "John Doe",
@@ -19,7 +19,7 @@
     },
     {   
       "id": "LI-2021-0278 R03",
-      "transferNumber": "TRF-2022-0002",
+      "transferNumber": [{"transfer1" : "TRF-2022-0003"},{"transfer2" : "TRF-2022-0004"}],
       "type": "LI",
       "assignedVendor": "X - Logistic",
       "attentionOf": "Jane Smith",
@@ -37,7 +37,7 @@
     },
     {
       "id": "LI-2022-0211 R02",
-      "transferNumber": "TRF-2022-0003",
+      "transferNumber": [{"transfer1" : "TRF-2022-0005"},{"transfer2" : "TRF-2022-0006"}],
       "type": "LI",
       "assignedVendor": "X- Transport",
       "attentionOf": "Bob Johnson",
@@ -55,7 +55,7 @@
     },
     {
       "id": "SI-2022-0211 R02",
-      "transferNumber": "TRF-2022-0004",
+      "transferNumber": [{"transfer1" : "TRF-2022-0007"},{"transfer2" : "TRF-2022-0008"}],
       "type": "SI",
       "assignedVendor": "X - Logistic",
       "attentionOf": "Sara Wilson",
@@ -73,7 +73,7 @@
     },
     {
       "id": "LI-2022-0211",
-      "transferNumber": "TRF-2022-0005",
+      "transferNumber": [{"transfer1" : "TRF-2022-0009"},{"transfer2" : "TRF-2022-00010"}],
       "type": "LI",
       "assignedVendor": "X- Transport",
       "attentionOf": "Mike Brown",
@@ -91,7 +91,7 @@
     },
     {
       "id": "SI-2022-0276 R01",
-      "transferNumber": "TRF-2022-0006",
+      "transferNumber": [{"transfer1" : "TRF-2022-0011"},{"transfer2" : "TRF-2022-0012"}],
       "type": "SI",
       "assignedVendor": "X - Logistic",
       "attentionOf": "Emily Davis",
@@ -109,7 +109,7 @@
     },
     {
       "id": "SI-2022-0211 R03",
-      "transferNumber": "TRF-2021-0007",
+      "transferNumber": [{"transfer1" : "TRF-2022-0013"},{"transfer2" : "TRF-2022-0014"}],
       "type": "SI",
       "assignedVendor": "X- Transport",
       "attentionOf": "David Wilson",
@@ -127,7 +127,7 @@
     },
     {
       "id": "SI-2022-0211",
-      "transferNumber": "TRF-2023-0008",
+      "transferNumber": [{"transfer1" : "TRF-2023-0015"},{"transfer2" : "TRF-2023-0014"}],
       "type": "SI",
       "assignedVendor": "X - Logistic",
       "attentionOf": "Olivia Johnson",
@@ -145,7 +145,7 @@
     },
     {
       "id": "LI-2021-0054",
-      "transferNumber": "TRF-2022-0009",
+      "transferNumber": [{"transfer1" : "TRF-2022-0018"},{"transfer2" : "TRF-2022-0017"}],
       "type": "LI",
       "assignedVendor": "X- Transport",
       "attentionOf": "James Smith",
@@ -163,7 +163,7 @@
     },
     {
       "id": "SI-2021-0111 R01",
-      "transferNumber": "TRF-2022-0010",
+      "transferNumber": [{"transfer1" : "TRF-2022-0030"}],
       "type": "SI",
       "assignedVendor": "X - Logistic",
       "attentionOf": "Sophia Wilson",
@@ -181,7 +181,7 @@
     },
     {
       "id": "LI-2022-0211 R03",
-      "transferNumber": "TRF-2022-0011",
+      "transferNumber": [{"transfer1" : "TRF-2021-0031"}],
       "type": "LI",
       "assignedVendor": "X- Transport",
       "attentionOf": "Ethan Davis",
@@ -199,7 +199,7 @@
     },
     {
       "id": "SI-2022-0097 R01",
-      "transferNumber": "TRF-2022-0012",
+      "transferNumber": [{"transfer1" : "TRF-2022-0032"}],
       "type": "SI",
       "assignedVendor": "X - Logistic",
       "attentionOf": "Ava Brown",
@@ -217,7 +217,7 @@
     },
     {
       "id": "LI-2021-0671",
-      "transferNumber": "TRF-2022-0013",
+      "transferNumber": [{"transfer1" : "TRF-2022-0033"}],
       "type": "LI",
       "assignedVendor": "X- Transport",
       "attentionOf": "Logan Johnson",
@@ -235,7 +235,7 @@
     },
     {
       "id": "SI-2021-0222",
-      "transferNumber": "TRF-2022-0014",
+      "transferNumber": [{"transfer1" : "TRF-2022-0034"}],
       "type": "SI",
       "assignedVendor": "X - Logistic",
       "attentionOf": "Lily Smith",
@@ -253,7 +253,7 @@
     },
     {
       "id": "LI-2021-0123 R01",
-      "transferNumber": "TRF-2022-0015",
+      "transferNumber": [{"transfer1" : "TRF-2022-0035"}],
       "type": "LI",
       "assignedVendor": "X- Transport",
       "attentionOf": "Noah Wilson",

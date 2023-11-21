@@ -86,7 +86,7 @@
                                     <font-awesome-icon
                                         :icon="['fas', 'truck']"
                                         class="icons"
-                                        style="color: var(--fifth-color);"
+                                        style="color: var(--fifth-color)"
                                     />
                                     Logistic Instruction
                                 </p>
@@ -98,7 +98,7 @@
                                     <font-awesome-icon
                                         :icon="['fas', 'user-pen']"
                                         class="icons"
-                                        style="color: var(--fifth-color);"
+                                        style="color: var(--fifth-color)"
                                     />
                                     Service Instruction
                                 </p>
@@ -114,7 +114,7 @@
                     <div class="transfer-number card">
                         <div class="information-title">Transfer No.</div>
                         <div class="information-body">
-                            {{ filteredProducts.transferNumber }}
+                            {{ filteredProducts.transferNumber }}   
                         </div>
                     </div>
                     <div class="customer-name card">
@@ -167,44 +167,37 @@
             </div>
 
             <div class="card2-container card">
-                Cost detail
+                <h5>Cost Detail</h5>
                 <table>
                     <thead>
                         <tr>
-                            <td>Description</td>
-                            <td>QTY</td>
-                            <td>UOM</td>
-                            <td>Unit Price</td>
-                            <td>Kurang jelas gambarnya</td>
-                            <td>krg jelas lagi</td>
-                            <td>Currency</td>
-                            <td>Vat Amount</td>
-                            <td>Sub Total</td>
-                            <td>Total</td>
-                            <td>Change To</td>
+                            <td class="table-title">Description</td>
+                            <td class="table-title">QTY</td>
+                            <td class="table-title">UOM</td>
+                            <td class="table-title">Unit Price</td>
+                            <td class="table-title">GST (%)</td>
+                            <td class="table-title"></td>
+                            <td class="table-title">Currency</td>
+                            <td class="table-title">Vat Amount</td>
+                            <td class="table-title"> Sub Total</td>
+                            <td class="table-title">Total</td>   
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>ahahhaha</td>
-                            <td>1</td>
-                            <td>Trip</td>
-                            <td>1400,00</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>AED</td>
-                            <td>70.00</td>
-                            <td>1400,00</td>
-                            <td>1470,00</td>
-                            <td>MITME</td>
+                            <td>{{ filteredProducts.desc}}</td>
+                            <td>{{ filteredProducts.qty }}</td>
+                            <td>{{ filteredProducts.uom }}</td>
+                            <td>{{ filteredProducts.price }}</td>
+                            <td>{{ filteredProducts.gst }}</td>
+                            <td><font-awesome-icon :icon="['fas', 'right-long']" /></td>
+                            <td>{{ filteredProducts.currency}}</td>
+                            <td>{{ filteredProducts.price * filteredProducts.gst / 100 }}</td>
+                            <td>{{ filteredProducts.qty * filteredProducts.price }}</td>
+                            <td>{{ filteredProducts.price * filteredProducts.gst / 100 + filteredProducts.qty * filteredProducts.price }}</td>
                         </tr>
                         <tr>
-                            <td>Exchange Rate 1 USD = 3.657 AED</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td colspan="6">Exchange Rate 1 USD = 3.657 AED</td>
                             <td>AED (total)</td>
                             <td>70,00</td>
                             <td>1400,00</td>
@@ -422,6 +415,7 @@ export default {
 .card-container {
     display: flex;
     font-size: smaller;
+    padding: 0.8rem;
 }
 
 .card-container .information {
@@ -459,16 +453,28 @@ export default {
     padding: 0 1em;
 }
 
-.vendor-address {
-}
-
 .vendor-address .information-title {
     width: 100%;
 }
 
+
+
+
+
+
+
+.table-title{
+    font-size: larger;
+    font-weight: bolder;
+}
+
+
+
+
 .card2-container {
     display: flex;
     font-size: smaller;
+    padding: 0.8rem;
 }
 
 .attachment-notes {
@@ -488,6 +494,27 @@ export default {
 .vendor-invoice .vendor-title {
     width: 60%;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .card3-container {
     display: flex;
@@ -513,7 +540,7 @@ export default {
 @media (max-width: 760px) {
 }
 
-@media (min-width: 1600px) {
+@media (min-width: 1440px) {
     .container {
         justify-content: flex-start;
         margin: 0 auto;

@@ -60,7 +60,7 @@ margin-right: 0;
 }
 #tubestream-logo {
 border-radius: 20px;
-width: 20%;
+width: 15%;
 background-color: #E8BCB9;
 }
 #bell-icon {

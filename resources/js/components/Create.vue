@@ -5,11 +5,8 @@
         <sidebar />
         <div class="container">
             <Header />
-            <div class="d-flex justify-content-end mb-3">
-                <BtnEmailExcel />
-            </div>
 
-            <div class="card-container card" type="card">
+            <!-- <div class="card-container card" type="card">
                 <div class="information-navigation">
                     <div class="backButton">
                         <button
@@ -218,7 +215,7 @@
                     </div>
                 </div>
             </div>
-            View Activity Note
+            View Activity Note -->
         </div>
     </div>
 </template>
@@ -227,7 +224,6 @@
 import Navbar from "./Navbar.vue";
 import Sidebar from "./Sidebar.vue";
 import Header from "./Header.vue"
-import BtnEmailExcel from "./BtnEmailExcel.vue";
 import { mapGetters } from "vuex";
 
 export default {
@@ -235,7 +231,6 @@ export default {
         navbar: Navbar,
         sidebar: Sidebar,
         Header,
-        BtnEmailExcel,
     },
     data() {
         return {

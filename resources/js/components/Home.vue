@@ -103,7 +103,7 @@
                         ref="dropdown"
                     >
                         <ul class="dropdownActive">
-                            <li @click="selectOption('LI')" class="options">
+                            <li @click="this.$router.push('/create')" class="options">
                                 <font-awesome-icon
                                     :icon="['fas', 'truck']"
                                     class="icons"
@@ -655,9 +655,6 @@ export default {
     padding-left: 0.55em;
     opacity: 1;
     transition: ease-in-out;
-}
-
-.searchForm {
 }
 
 .searchContainer {

@@ -1,6 +1,7 @@
 import NotFound from './components/NotFoundComponent.vue'
 import Home from './components/Home.vue'
 import Detail from './components/Detail.vue'
+import Create from './components/Create.vue'
 
 const routes =[
     {
@@ -18,8 +19,12 @@ const routes =[
         name : 'detail',
         component : Detail,
         props : true
-
-    }
+    },
+    {
+        path : '/create',
+        name : 'create',
+        component : Create
+    },
 ]
 
 export default routes

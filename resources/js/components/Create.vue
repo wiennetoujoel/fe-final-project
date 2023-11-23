@@ -6,216 +6,207 @@
         <div class="container">
             <Header />
 
-            <!-- <div class="card-container card" type="card">
-                <div class="information-navigation">
-                    <div class="backButton">
-                        <button
-                            type="button"
-                            class="back-button"
-                            @click="backwards()"
-                        >
-                            <font-awesome-icon
-                                :icon="['fas', 'chevron-left']"
-                                style="color: #ae445a"
-                            />
-                            Back
-                        </button>
-                    </div>
-                    <div class="terminate-modify">
-                        <button
-                            type="button"
-                            class="terminate-button"
-                            onclick="terminate"
-                        >
-                            <font-awesome-icon
-                                :icon="['fas', 'ban']"
-                                style="color: #f90606"
-                            />
-                            Terminate
-                        </button>
-                        <button
-                            type="button"
-                            class="modify-button"
-                            onclick="modify"
-                        >
-                            <font-awesome-icon
-                                :icon="['fas', 'pencil']"
-                                style="color: #ae445a"
-                            />
-                            Modify
-                        </button>
-                    </div>
-                </div>
-                <div class="information">
-                    <div class="logistic-type card">
-                        <div class="information-title">Type</div>
-                        <div class="information-body">
-                            <template v-if="filteredProducts.type === 'LI'">
-                                <p>
-                                    <font-awesome-icon
-                                        :icon="['fas', 'truck']"
-                                        class="icons"
-                                        style="color: var(--fifth-color)"
-                                    />
-                                    Logistic Instruction
-                                </p>
-                            </template>
-                            <template
-                                v-else-if="filteredProducts.type === 'SI'"
-                            >
-                                <p>
-                                    <font-awesome-icon
-                                        :icon="['fas', 'user-pen']"
-                                        class="icons"
-                                        style="color: var(--fifth-color)"
-                                    />
-                                    Service Instruction
-                                </p>
-                            </template>
+            <!-- form to create -->
+            <div class="card pe-3">
+                <form action="">
+                    <div class="container text-start">
+                        <!-- instruction data -->
+                        <div class="row mb-3">
+                            <div class="col border border-success">
+                                One
+                            </div>
+                            <div class="col border border-success">
+                                Two
+                            </div>
+                            <div class="col border border-success">
+                                Three
+                            </div>
+                            <div class="col border border-success">
+                                Four
+                            </div>
+                            <div class="col border border-success">
+                                Five
+                            </div>
+                            <div class="col border border-success">
+                                Six
+                            </div>
                         </div>
-                    </div>
-                    <div class="list-number card">
-                        <div class="information-title">Li No.</div>
-                        <div class="information-body">
-                            {{ filteredProducts.id }}
+                        <div class="row mb-3">
+                            <div class="col border border-success">
+                                One
+                            </div>
+                            <div class="col border border-success">
+                                Two
+                            </div>
+                            <div class="col border border-success">
+                                Three
+                            </div>
+                            <div class="col border border-success">
+                                Four
+                            </div>
+                            <div class="col border border-success">
+                                Five
+                            </div>
+                            <div class="col border border-success">
+                                Six
+                            </div>
                         </div>
-                    </div>
-                    <div class="transfer-number card">
-                        <div class="information-title">Transfer No.</div>
-                        <div class="information-body">
-                            {{ filteredProducts.transferNumber }}   
+                        <div class="row mb-3">
+                            <div class="col border border-success">
+                                One
+                            </div>
+                            <div class="col border border-success">
+                                Two
+                            </div>
+                            <div class="col border border-success">
+                                Three
+                            </div>
+                            <div class="col border border-success">
+                                Four
+                            </div>
+                            <div class="col border border-success">
+                                Five
+                            </div>
+                            <div class="col border border-success">
+                                Six
+                            </div>
                         </div>
-                    </div>
-                    <div class="customer-name card">
-                        <div class="information-title">Customer</div>
-                        <div class="information-body">
-                            {{ filteredProducts.customerName }}
-                        </div>
-                    </div>
-                    <div class="customer-po card">
-                        <div class="information-title">Customer PO</div>
-                        <div class="information-body">
-                            {{ filteredProducts.customerPO }}
-                        </div>
-                    </div>
-                    <div class="status card">
-                        <div class="information-title">Status</div>
-                        <div class="information-body">
-                            {{ filteredProducts.status }}
-                        </div>
-                    </div>
-                </div>
-                <div class="information">
-                    <div class="pic card">
-                        <div class="information-title">Attention of</div>
-                        <div class="information-body">
-                            {{ filteredProducts.attentionOf }}
-                        </div>
-                    </div>
-                    <div class="vendor card">
-                        <div class="information-title">Assigned Vendor</div>
-                        <div class="information-body">
-                            {{ filteredProducts.assignedVendor }}
-                        </div>
-                    </div>
-                    <div class="vendor-quitation card">
-                        <div class="information-title">
-                            Vendor Quitation No.
-                        </div>
-                        <div class="information-body">
-                            {{ filteredProducts.quotationNumber }}
-                        </div>
-                    </div>
-                    <div class="vendor-address card">
-                        <div class="information-title">Vendor Address</div>
-                        <div class="information-body">
-                            {{ filteredProducts.vendorAddress }}
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card2-container card">
-                <h5>Cost Detail</h5>
-                <table>
-                    <thead>
-                        <tr>
-                            <td class="table-title">Description</td>
-                            <td class="table-title">QTY</td>
-                            <td class="table-title">UOM</td>
-                            <td class="table-title">Unit Price</td>
-                            <td class="table-title">GST (%)</td>
-                            <td class="table-title"></td>
-                            <td class="table-title">Currency</td>
-                            <td class="table-title">Vat Amount</td>
-                            <td class="table-title"> Sub Total</td>
-                            <td class="table-title">Total</td>   
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ filteredProducts.desc}}</td>
-                            <td>{{ filteredProducts.qty }}</td>
-                            <td>{{ filteredProducts.uom }}</td>
-                            <td>{{ filteredProducts.price }}</td>
-                            <td>{{ filteredProducts.gst }}</td>
-                            <td><font-awesome-icon :icon="['fas', 'right-long']" /></td>
-                            <td>{{ filteredProducts.currency}}</td>
-                            <td>{{ filteredProducts.price * filteredProducts.gst / 100 }}</td>
-                            <td>{{ filteredProducts.qty * filteredProducts.price }}</td>
-                            <td>{{ filteredProducts.price * filteredProducts.gst / 100 + filteredProducts.qty * filteredProducts.price }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="6">Exchange Rate 1 USD = 3.657 AED</td>
-                            <td>AED (total)</td>
-                            <td>70,00</td>
-                            <td>1400,00</td>
-                            <td>1470,00</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>AED (total)</td>
-                            <td>70,00</td>
-                            <td>1400,00</td>
-                            <td>1470,00</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="attachment-notes">
-                    <div class="attachment">Attachment</div>
-                    <div class="notes">Notes</div>
-                </div>
-            </div>
-            <div class="vendor-invoice">
-                <div class="vendor-title">Vendor Invoice</div>
-                <button type="button" onclick="addVendorInvoice">
-                    + Add Vendor Invoice
-                </button>
-            </div>
-            <div class="card3-container card">
-                <div class="card3-title">For Internal Only</div>
+                        <!-- cost detail -->
+                        <div class="row text-start">
+                            <h3>Cost Detail</h3>
+                        </div>
+                        <div class="row text-center ">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Qty</th>
+                                        <th scope="col">UOM</th>
+                                        <th scope="col">Unit Price</th>
+                                        <th scope="col">GST(%)</th>
+                                        <th scope="col">Currency</th>
+                                        <th scope="col">Vat Amount</th>
+                                        <th scope="col">Sub Total</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Charge To</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <input class="form-control" type="text" placeholder="Enter Description" aria-label="default input example" id="description" name="description" required>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="number" placeholder="Enter Qty" aria-label="default input example" id="qty" name="qty">
+                                        </td>
+                                        <td>
+                                            <select class="form-select" aria-label="Default select example" id="uom" name="uom" required>
+                                                <option selected disabled hidden value="">Select UOM</option>
+                                                <option value="SHP">SHP</option>
+                                                <option value="BILL">BILL</option>
+                                                <option value="HRS">HRS</option>
+                                                <option value="MEN">MEN</option>
+                                                <option value="PCS">PCS</option>
+                                                <option value="TRIP">TRIP</option>
+                                                <option value="MT">MT</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="number" placeholder="Enter Unit Price" aria-label="default input example" id="unitPrice" name="unitPrice">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="number" placeholder="Enter GST" aria-label="default input example" value="0" id="gst" name="gsgt">
+                                        </td>
+                                        <td>
+                                            <select class="form-select" aria-label="Default select example" id="currency" name="currency">
+                                                <option selected disabled hidden value=""></option>
+                                                <option value="USD">USD</option>
+                                                <option value="AUD">AUD</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="number" placeholder="VAT Amount" aria-label="default input example" value="0.00" id="vatAmount" name="vatAmount">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="number" placeholder="Sub Total" aria-label="default input example" value="0.00" id="subTotal" name="subTotal">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="number" placeholder="Total" aria-label="default input example" value="0.00" id="total" name="total">
+                                        </td>
+                                        <td>
+                                            <select class="form-select" aria-label="Default select example" id="chargeTo" name="chargeTo" required>
+                                                <option selected disabled hidden value="">Select an Option</option>
+                                                <option value="MITO">MITO</option>
+                                                <option value="Customer">Customer</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-secondary" @click="">
+                                                <font-awesome-icon icon="minus" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <button type="button" class="btn btn-info" @click="">
+                                                <font-awesome-icon icon="plus" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- attachment -->
+                        <div class="row mb-3 text-start">
+                            <div class="col">
+                                <p>Attachment</p>
+                                <input class="form-control" type="file" id="formFile" name="formFile">
+                                
+                            </div>
+                            <div class="col">
+                                <p>Notes</p>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="notes" required></textarea>
+                            </div>
+                        </div>
 
-                <div class="card3-body">
-                    <div class="attachment-internal">
-                        Attachment
-                        <button type="button" onclick="addAttachment">
-                            + Add Attachment
-                        </button>
+                        <!-- link to -->
+                        <div class="row mb-3 text-start">
+                            <p>Link To</p>
+                            <select class="form-select" aria-label="Default select example" id="chargeTo" name="chargeTo" required>
+                                <option selected disabled hidden value="">Select Item</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                            </select>
+                        </div>
+    
+                        <!-- button  -->
+                        <div class="row mt-5 text-end justify-content-end">
+                            <div class="col-1">
+                                <button class="btn btn-light" type="submit">Cancel</button>
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-light border border-secondary" type="submit">Save as Draft</button>
+                            </div>
+                            <div class="col-1">
+                                <button class="btn btn-info" type="submit">Submit</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="internal-note">
-                        Internal Note
-                        <button type="button" onclick="addNote">
-                            + Add Internal Note
-                        </button>
-                    </div>
-                </div>
+
+                </form>
             </div>
-            View Activity Note -->
         </div>
     </div>
 </template>
@@ -224,7 +215,6 @@
 import Navbar from "./Navbar.vue";
 import Sidebar from "./Sidebar.vue";
 import Header from "./Header.vue"
-import { mapGetters } from "vuex";
 
 export default {
     components: {
@@ -236,32 +226,6 @@ export default {
         return {
             isExpanded: false,
         };
-    },
-
-    props: {
-        //nerima informasi id dari halaman utama
-        id: {
-            type: String,
-            required: true,
-        },
-    },
-
-    created() {
-        this.$store.dispatch("example/getAllData");
-    },
-
-    computed: {
-        ...mapGetters({
-            products: "example/getData", //minta ke ExampleController.php
-        }),
-        filteredProducts() {
-            return this.products.find((product) => product.id === this.id);
-        },
-    },
-    methods: {
-        backwards() {
-            this.$router.go(-1);
-        },
     },
 };
 </script>
@@ -275,7 +239,6 @@ export default {
     --fifth-color: #f39f5a;
     ---sixth-color: #e8bcb9;
 }
-
 .main-container {
     display: flex;
     flex-direction: row;
@@ -285,7 +248,6 @@ export default {
     min-width: 1020px;
     background-color: #ccc;
 }
-
 .container {
     min-width: 970px;
     width: calc(100% - 2rem);
@@ -294,219 +256,7 @@ export default {
     min-height: 100vh;
 }
 
-.container-title {
-    font-weight: 550;
-}
 
-.container-subtitle {
-    display: flex;
-    flex-direction: row;
-    padding-bottom: 1em;
-}
-
-.container-subtitle .subtitle {
-    width: 50%;
-    display: flex;
-    flex-direction: row;
-}
-
-.container-subtitle .subtitle-buttons {
-    display: flex;
-    justify-content: flex-end;
-    width: 50%;
-    gap: 30px;
-}
-
-.subtitle .vendor-management {
-    padding-right: 0.55em;
-    opacity: 0.7;
-}
-
-.subtitle .party-instruction {
-    padding-left: 0.55em;
-    opacity: 1;
-    transition: ease-in-out;
-}
-
-.subtitle .vendor-management:hover,
-.subtitle .party-instruction:hover {
-    cursor: pointer;
-    transform: scale(1.01);
-    opacity: 1;
-    text-decoration: underline;
-    color: #662549;
-}
-
-.subtitle-buttons .email-button,
-.subtitle-buttons .export-button {
-    border: 0.6px solid #ccc;
-    background-color: white;
-    font-size: 90%;
-    font-weight: 400;
-}
-
-.email-button:hover,
-.export-button:hover {
-    font-weight: 500;
-    background-color: #e8bcb9;
-    border: 0.6px solid black;
-    transform: scale(1.01);
-}
-
-.information-navigation {
-    padding: 1em 0.5em;
-    display: flex;
-    flex-direction: row;
-}
-
-.information-navigation .backButton {
-    width: 50%;
-}
-
-.information-navigation .terminate-modify {
-    width: 50%;
-    display: flex;
-    justify-content: flex-end;
-    gap: 30px;
-}
-
-.back-button,
-.terminate-button,
-.modify-button {
-    background-color: transparent;
-    border: none;
-}
-
-.back-button:hover,
-.terminate-button:hover,
-.modify-button:hover {
-    transform: scale(1.05);
-}
-
-.card-container {
-    display: flex;
-    font-size: smaller;
-    padding: 0.8rem;
-}
-
-.card-container .information {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.card-container .information .card {
-    flex-grow: 1;
-    width: 16.66667%;
-    border: none;
-}
-
-.card-container .information .vendor-address {
-    flex-grow: 1;
-    width: 50%;
-}
-
-.information-title {
-    display: flex;
-    padding: 0 1em;
-    width: 100%;
-    justify-content: flex-start;
-    text-align: left;
-    color: rgb(97, 95, 95) ccc;
-    font-size: x-small;
-}
-
-.information-body {
-    display: flex;
-    justify-content: flex-start;
-    text-align: left;
-    font-weight: 600;
-    padding: 0 1em;
-}
-
-.vendor-address .information-title {
-    width: 100%;
-}
-
-
-
-
-
-
-
-.table-title{
-    font-size: larger;
-    font-weight: bolder;
-}
-
-
-
-
-.card2-container {
-    display: flex;
-    font-size: smaller;
-    padding: 0.8rem;
-}
-
-.attachment-notes {
-    display: flex;
-    flex-direction: row;
-}
-
-.attachment-notes .attachment {
-    width: 50%;
-}
-
-.vendor-invoice {
-    display: flex;
-    flex-direction: row;
-}
-
-.vendor-invoice .vendor-title {
-    width: 60%;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.card3-container {
-    display: flex;
-}
-
-.card3-container .card3-body {
-    display: flex;
-    flex-direction: row;
-}
-
-.card3-container .card3-body .attachment-internal {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-}
-
-.card3-container .card3-body .internal-note {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-}
 
 @media (max-width: 760px) {
 }

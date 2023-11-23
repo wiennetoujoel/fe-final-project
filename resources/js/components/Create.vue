@@ -12,63 +12,73 @@
                     <div class="container text-start">
                         <!-- instruction data -->
                         <div class="row mb-3">
-                            <div class="col border border-success">
-                                One
+                            <div class="col-2">
+                                <select class="form-select" aria-label="Default select example" id="instructionType" name="instructionType" required>
+                                    <option disabled selected hidden value="">Select menu ...</option>
+                                    <option value="logistic">Logistic Instruction</option>
+                                    <option value="service">Service Instruction</option>
+                                </select>
                             </div>
-                            <div class="col border border-success">
-                                Two
-                            </div>
-                            <div class="col border border-success">
-                                Three
-                            </div>
-                            <div class="col border border-success">
-                                Four
-                            </div>
-                            <div class="col border border-success">
-                                Five
-                            </div>
-                            <div class="col border border-success">
-                                Six
+                            <div class="col-10 text-end">
+                                <button type="button" class="btn btn-secondary rounded-pill py-0" disabled>Draft</button>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col border border-success">
-                                One
+                            <div class="col">
+                                
                             </div>
-                            <div class="col border border-success">
-                                Two
+                            <div class="col">
+                                <p class="mb-0">Assigned Vendor</p>
+                                <select class="form-select" aria-label="Default select example" id="instructionType" name="instructionType" required>
+                                    <option disabled selected hidden value="">Enter Vendor</option>
+                                    <option value="item" v-for="(item, index) in assignedVendor" :key="index">{{ item }}</option>
+                                </select>
                             </div>
-                            <div class="col border border-success">
-                                Three
+                            <div class="col">
+                                <p class="mb-0">Attention Of</p>
+                                <input class="form-control" type="text" placeholder="Enter Attention Of" aria-label="default input example" required>
                             </div>
-                            <div class="col border border-success">
-                                Four
+                            <div class="col">
+                                <p class="mb-0">Quotation No.</p>
+                                <input class="form-control" type="text" placeholder="Enter Quotation" aria-label="default input example" required>
                             </div>
-                            <div class="col border border-success">
-                                Five
+                            <div class="col">
+                                <p class="mb-0">Invoice To</p>
+                                <select class="form-select" aria-label="Default select example" id="instructionType" name="instructionType" required>
+                                    <option disabled selected hidden value="" class="text-secondary">Select an Option</option>
+                                    <option value="MITO">MITO</option>
+                                    <option value=""> 
+                                        <button>Haii</button> <!-- option cannot rander tag button and other element, hanya render unicode -->
+                                    </option>
+                                </select>
                             </div>
-                            <div class="col border border-success">
-                                Six
+                            <div class="col">
+                                <p class="mb-0">Customer - Contract </p>
+                                <select class="form-select" aria-label="Default select example" id="instructionType" name="instructionType" required>
+                                    <option disabled selected hidden value="" class="text-secondary">Enter Vendor</option>
+                                    <option value="item" v-for="(item, index) in customerContract" :key="index">{{ item }}</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col border border-success">
-                                One
+                        <div class="row mb-5">
+                            <div class="col-2">
+                                
                             </div>
-                            <div class="col border border-success">
-                                Two
+                            <div class="col-8">
+                                <p class="mb-0">Vendor Address</p>
+                                <!-- <label for="exampleDataList" class="form-label">Datalist example</label> -->
+                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
+                                <datalist id="datalistOptions">
+                                    <option value="San Francisco"></option>
+                                    <option value="New York"></option>
+                                    <option value="Seattle"></option>
+                                    <option value="Los Angeles"></option>
+                                    <option value="Chicago"></option>
+                                </datalist>
                             </div>
-                            <div class="col border border-success">
-                                Three
-                            </div>
-                            <div class="col border border-success">
-                                Four
-                            </div>
-                            <div class="col border border-success">
-                                Five
-                            </div>
-                            <div class="col border border-success">
-                                Six
+                            <div class="col-2">
+                                <p class="mb-0">Customer PO No.</p>
+                                <input class="form-control" type="text" placeholder="Enter Customer PO" aria-label="default input example" required>
                             </div>
                         </div>
 
@@ -169,26 +179,28 @@
                         </div>
                         
                         <!-- attachment -->
-                        <div class="row mb-3 text-start">
+                        <div class="row mb-5 text-start">
                             <div class="col">
-                                <p>Attachment</p>
+                                <p class="mb-0">Attachment</p>
                                 <input class="form-control" type="file" id="formFile" name="formFile">
                                 
                             </div>
                             <div class="col">
-                                <p>Notes</p>
+                                <p class="mb-0">Notes</p>
                                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="notes" required></textarea>
                             </div>
                         </div>
 
                         <!-- link to -->
-                        <div class="row mb-3 text-start">
-                            <p>Link To</p>
-                            <select class="form-select" aria-label="Default select example" id="chargeTo" name="chargeTo" required>
-                                <option selected disabled hidden value="">Select Item</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                            </select>
+                        <div class="row mb-5 text-start">
+                            <div class="col">
+                                <p class="mb-0">Link To</p>
+                                <select class="form-select" aria-label="Default select example" id="chargeTo" name="chargeTo" required>
+                                    <option selected disabled hidden value="">Select Item</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                </select>
+                            </div>
                         </div>
     
                         <!-- button  -->
@@ -196,7 +208,7 @@
                             <div class="col-1">
                                 <button class="btn btn-light" type="submit">Cancel</button>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2 text-center">
                                 <button class="btn btn-light border border-secondary" type="submit">Save as Draft</button>
                             </div>
                             <div class="col-1">
@@ -225,6 +237,13 @@ export default {
     data() {
         return {
             isExpanded: false,
+            assignedVendor: [
+                'Machine Shop 1', 'Neil Mansell Transport', 'Beattie Transport', 'Qube Logistic', 'Symons Group', 'Gearhart United - Dampier', 'Ozoon API - Dalby'
+            ],
+            customerContract: [
+                '3-1/2 EUE Tubing', 'AGE Developments Pty Ltd', 'AGED AGE0336', 'AGL Gas Storage Pty Ltd', 'AGL Upstream Investments Ltd'
+            ]
+            
         };
     },
 };

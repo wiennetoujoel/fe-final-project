@@ -111,11 +111,11 @@
                     <div v-if="isDropdownVisible" ref="dropdown" class="dropdown" >
                         <ul>
                             <div @click="this.$router.push('/create')" class="options">
-                                <font-awesome-icon :icon="['fas', 'truck']" class="me-2" />
+                                <font-awesome-icon :icon="['fas', 'truck']" class="me-2" style="color: #0dcaf0;" />
                                 Logistic Instruction
                             </div>
                             <div @click="selectOption('SI')" class="options">
-                                <font-awesome-icon :icon="['fas', 'user-pen']" class="me-2" />
+                                <font-awesome-icon :icon="['fas', 'user-pen']" class="me-2" style="color: #0dcaf0;" />
                                 Service Instruction
                             </div>
                         </ul>

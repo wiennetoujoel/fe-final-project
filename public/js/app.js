@@ -23138,7 +23138,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "options"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_font_awesome_icon, {
     icon: ['fas', 'truck'],
-    "class": "me-2"
+    "class": "me-2",
+    style: {
+      "color": "#0dcaf0"
+    }
   }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Logistic Instruction ")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     onClick: _cache[5] || (_cache[5] = function ($event) {
       return $options.selectOption('SI');
@@ -23146,7 +23149,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "options"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_font_awesome_icon, {
     icon: ['fas', 'user-pen'],
-    "class": "me-2"
+    "class": "me-2",
+    style: {
+      "color": "#0dcaf0"
+    }
   }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Service Instruction ")])])], 512 /* NEED_PATCH */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["sort-up", {
       active: $data.sortBy === 'id' && $data.sortOrder === 'asc'

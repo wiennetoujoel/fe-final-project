@@ -5,14 +5,7 @@
         <sidebar />
 
         <div class="container">
-            <h3 class="container-title">3rd Party Instruction</h3>
-            <div class="container-subtitle">
-                <div class="subtitle">
-                    <div class="vendor-management">Vendor Management</div>
-                    <span>&gt;</span>
-                    <div class="party-instruction">3rd Party Instruction</div>
-                </div>
-            </div>
+            <Header />
 
             <div class="card-container card" type="card">
                 <div class="information-navigation">
@@ -79,7 +72,7 @@
                         >
                             <font-awesome-icon
                                 :icon="['fas', 'file-export']"
-                                style="color: #ae445a"
+                                style="color: #0dcaf0"
                             />
                             Export
                         </button>
@@ -89,21 +82,17 @@
 
             <div class="card2-container card">
                 <div class="dropdown-trigger">
-                    <button
-                        type="button"
-                        @click="toggleDropdown"
-                        class="create-third-party"
-                    >
+                    <button type="button" class="btn btn-info create-third-party" @click="toggleDropdown">
                         <font-awesome-icon :icon="['fas', 'plus']" />
                         Create 3rd Party Instruction
                     </button>
-                    <div
+                    <!-- <div
                         v-if="isDropdownVisible"
                         class="dropdown"
                         ref="dropdown"
                     >
                         <ul class="dropdownActive">
-                            <li @click="selectOption('LI')" class="options">
+                            <li @click="this.$router.push('/create')" class="options">
                                 <font-awesome-icon
                                     :icon="['fas', 'truck']"
                                     class="icons"
@@ -117,6 +106,18 @@
                                 />
                                 Service Instruction
                             </li>
+                        </ul>
+                    </div> -->
+                    <div v-if="isDropdownVisible" ref="dropdown" class="dropdown" >
+                        <ul>
+                            <div @click="this.$router.push('/create')" class="options">
+                                <font-awesome-icon :icon="['fas', 'truck']" class="me-2" />
+                                Logistic Instruction
+                            </div>
+                            <div @click="selectOption('SI')" class="options">
+                                <font-awesome-icon :icon="['fas', 'user-pen']" class="me-2" />
+                                Service Instruction
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -444,9 +445,15 @@
 <script>
 import Navbar from "./Navbar.vue";
 import Sidebar from "./Sidebar.vue";
+import Header from "./Header.vue";
 import { mapGetters } from "vuex";
 
 export default {
+    components: {
+        navbar: Navbar,
+        sidebar: Sidebar,
+        Header,
+    },
     data() {
         return {
             isExpanded: false,
@@ -577,11 +584,9 @@ export default {
             console.log("response");
         },
 
-        selectOption(option) {},
-    },
-    components: {
-        navbar: Navbar,
-        sidebar: Sidebar,
+        selectOption(option) {
+
+        },
     },
 };
 </script>
@@ -659,13 +664,14 @@ export default {
 
 .searchContainer {
     position: relative;
-    --size-button: 25px;
+    --size-button: 30px;
     color: black;
 }
 
 .input {
     padding-left: var(--size-button);
     height: var(--size-button);
+    /* height: 30px; */
     font-size: 12px;
     border: none;
     color: black;
@@ -723,8 +729,10 @@ export default {
 .export-button {
     border: 0.6px solid #ccc;
     background-color: white;
-    font-size: 90%;
+    font-size: 14.4px;
     font-weight: 400;
+    padding: 4px 12px;
+    border-radius: 4px;
 }
 
 .export-button:hover {
@@ -762,42 +770,29 @@ export default {
     margin-right: 0.5rem;
     margin-bottom: 1rem;
 }
-
 .create-third-party {
-    width: 100%;
-    background-color: white;
-    text-align: left;
+    color: white;
 }
-
-.dropdown ul {
+.dropdown ul{
     position: absolute;
-    border: 1px solid black;
+    border: 1px solid rgba(148, 148, 148, 0.571);
+    border-radius: 4px;
     list-style-type: none;
     width: 100%;
     font-size: smaller;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 0;
-}
-
-.options {
-    margin: 0;
-    width: 100%;
-    text-align: left;
-    padding: 0.3rem;
-    background: #e0e0e0;
-    box-shadow: 2px 2px 6px #bebebe, -2px -2px 6px #ffffff;
-    cursor: pointer;
-}
-
-.options:hover {
+    padding-left: 0;
     background-color: white;
-    transform: scale(1.02);
 }
-
-.options .icons {
-    padding-right: 0.4rem;
+.options {
+    padding: 0.6rem 0.8rem;
+    cursor: pointer;
+    font-size: 14.4px;
+}
+.options:hover {
+    background-color: #c1c1c1;
 }
 .information-navigation .filterButton .open-button,
 .information-navigation .filterButton .completed-button {
@@ -810,12 +805,10 @@ export default {
 
     transition: 0.3s ease-in-out;
 }
-
 .open-button.active,
 .completed-button.active {
     border-bottom-color: var(---sixth-color) !important;
 }
-
 .information-navigation .search-export {
     width: 50%;
     display: flex;
@@ -823,7 +816,6 @@ export default {
     gap: 1rem;
     padding-right: 1rem;
 }
-
 table {
     margin: 0 auto;
     width: 98%;
@@ -834,12 +826,10 @@ table {
     text-align: center;
     transition: height 0.3 ease;
 }
-
 thead tr {
     width: fit-content;
     padding: 0;
 }
-
 thead tr td {
     background-color: #f5f5f5;
     flex: content;
@@ -847,23 +837,19 @@ thead tr td {
     font-weight: 500;
     margin: 0;
 }
-
 tbody tr td {
     padding: 12px;
     border-bottom: 1px solid black;
     cursor: pointer;
     font-size: smaller;
 }
-
 tbody tr:last-child td {
     border: 0px !important;
 }
-
 tbody tr:hover {
     background-color: #f2f2f2;
     transition: background-color 0.3s ease;
 }
-
 .header-title {
     display: flex;
     flex-direction: row;
@@ -872,7 +858,6 @@ tbody tr:hover {
     justify-content: center;
     font-size: smaller;
 }
-
 .sort-symbol {
     display: flex;
     align-items: center;

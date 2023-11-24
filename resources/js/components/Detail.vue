@@ -4,37 +4,9 @@
     <div class="main-container">
         <sidebar />
         <div class="container">
-            <h3 class="container-title">3rd Party Instruction</h3>
-            <div class="container-subtitle">
-                <div class="subtitle">
-                    <div class="vendor-management">Vendor Management</div>
-                    <span>&gt;</span>
-                    <div class="party-instruction">3rd Party Instruction</div>
-                </div>
-                <div class="subtitle-buttons">
-                    <button
-                        type="button"
-                        class="email-button"
-                        onclick="sendEmail"
-                    >
-                        <font-awesome-icon
-                            :icon="['fas', 'paper-plane']"
-                            style="color: #ae445a"
-                        />
-                        Send Email
-                    </button>
-                    <button
-                        type="button"
-                        class="export-button"
-                        onclick="exportExcel"
-                    >
-                        <font-awesome-icon
-                            :icon="['fas', 'file-export']"
-                            style="color: #ae445a"
-                        />
-                        Export
-                    </button>
-                </div>
+            <Header />
+            <div class="d-flex justify-content-end mb-3">
+                <BtnEmailExcel />
             </div>
 
             <div class="card-container card" type="card">
@@ -283,9 +255,17 @@
 <script>
 import Navbar from "./Navbar.vue";
 import Sidebar from "./Sidebar.vue";
+import Header from "./Header.vue"
+import BtnEmailExcel from "./BtnEmailExcel.vue";
 import { mapGetters } from "vuex";
 
 export default {
+    components: {
+        navbar: Navbar,
+        sidebar: Sidebar,
+        Header,
+        BtnEmailExcel,
+    },
     data() {
         return {
             isExpanded: false,
@@ -357,10 +337,6 @@ export default {
 
             return result.toFixed(2)    
         }
-    },
-    components: {
-        navbar: Navbar,
-        sidebar: Sidebar,
     },
 };
 </script>

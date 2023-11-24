@@ -114,7 +114,21 @@
                     <div class="transfer-number card">
                         <div class="information-title">Transfer No.</div>
                         <div class="information-body">
-                            {{ filteredProducts.transferNumber }}   
+                            <span
+                                v-for="(
+                                    transfer, index
+                                ) in filteredProducts.transferNumber"
+                                :key="index"
+                            >
+                                {{ Object.values(transfer)[0] }}
+                                <br
+                                    v-if="
+                                        index <
+                                        filteredProducts.transferNumber.length -
+                                            1
+                                    "
+                                />
+                            </span>
                         </div>
                     </div>
                     <div class="customer-name card">
@@ -176,44 +190,58 @@
                             <td class="table-title">UOM</td>
                             <td class="table-title">Unit Price</td>
                             <td class="table-title">GST (%)</td>
-                            <td class="table-title"></td>
                             <td class="table-title">Currency</td>
+                            <td class="table-title"></td>
                             <td class="table-title">Vat Amount</td>
-                            <td class="table-title"> Sub Total</td>
-                            <td class="table-title">Total</td>   
+                            <td class="table-title">Sub Total</td>
+                            <td class="table-title">Total</td>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>{{ filteredProducts.desc}}</td>
-                            <td>{{ filteredProducts.qty }}</td>
-                            <td>{{ filteredProducts.uom }}</td>
-                            <td>{{ filteredProducts.price }}</td>
-                            <td>{{ filteredProducts.gst }}</td>
-                            <td><font-awesome-icon :icon="['fas', 'right-long']" /></td>
-                            <td>{{ filteredProducts.currency}}</td>
-                            <td>{{ filteredProducts.price * filteredProducts.gst / 100 }}</td>
-                            <td>{{ filteredProducts.qty * filteredProducts.price }}</td>
-                            <td>{{ filteredProducts.price * filteredProducts.gst / 100 + filteredProducts.qty * filteredProducts.price }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="6">Exchange Rate 1 USD = 3.657 AED</td>
-                            <td>AED (total)</td>
-                            <td>70,00</td>
-                            <td>1400,00</td>
-                            <td>1470,00</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>AED (total)</td>
-                            <td>70,00</td>
-                            <td>1400,00</td>
-                            <td>1470,00</td>
+                        <tr
+                            v-for="(product, index) in costDetailProducts"
+                            :key="index"
+                        >
+                            <td
+                                v-for="(detail, detailIndex) in product[
+                                    'detail' + (index + 1)
+                                ]"
+                                :key="detailIndex"
+                            >
+                                {{
+                                    detail.desc ||
+                                    detail.qty ||
+                                    detail.uom ||
+                                    detail.price ||
+                                    detail.gst ||
+                                    detail.currency
+                                }}
+                            </td>
+                            <td>
+                                <font-awesome-icon :icon="['fas', 'right-long']" />
+                            </td>
+                            <td>
+                                {{
+                                    calculateVAT(
+                                        product["detail" + (index + 1)]
+                                    )
+                                }}
+                            </td>
+                            <td>
+                                {{
+                                    calculateSubTotal(
+                                        product["detail" + (index + 1)]
+                                    )
+                                }}
+                            </td>
+                            <td>
+                                {{
+                                    calculateTotal(
+                                        product["detail" + (index + 1)]
+                                    )
+                                }}
+                            </td>
+
                         </tr>
                     </tbody>
                 </table>
@@ -247,6 +275,7 @@
                 </div>
             </div>
             View Activity Note
+            {{ costDetailProducts }}
         </div>
     </div>
 </template>
@@ -280,13 +309,54 @@ export default {
             products: "example/getData", //minta ke ExampleController.php
         }),
         filteredProducts() {
-            return this.products.find((product) => product.id === this.id);
+            return (
+                this.products.find((product) => product.id === this.id) || {}
+            );
+        },
+        costDetailProducts() {
+            const selectedProduct = this.products.find(
+                (product) => product.id === this.id
+            );
+
+            return selectedProduct.costDetail;
         },
     },
     methods: {
         backwards() {
             this.$router.go(-1);
         },
+        calculateVAT(detail) {
+            console.log("detail", detail);
+            
+            if (detail.length > 0) {
+                const gst = detail.find((item) => item.gst)?.gst || 0;
+                const price = detail.find((item) => item.price)?.price || 0;
+                const qty = detail.find((item) => item.qty)?.qty || 0;
+                const result = gst * price * qty/100;
+                return result.toFixed(2);
+            }
+            return 0; 
+        },
+        calculateSubTotal(detail){
+
+            console.log("detail di subtotal", detail)
+            if (detail.length >0) {
+                const price = detail.find((item) => item.price)?.price || 0;
+                const qty = detail.find((item) => item.qty)?.qty || 0;
+                const result = price * qty;
+                return result.toFixed(2);
+            }
+            return '0.00';
+            
+        },
+        calculateTotal(detail){
+            const vat = parseFloat(this.calculateVAT(detail));
+            const subTotal = parseFloat(this.calculateSubTotal(detail));
+
+            const result = vat + subTotal;
+
+            return result.toFixed(2)    
+        }
     },
     components: {
         navbar: Navbar,
@@ -451,25 +521,34 @@ export default {
     text-align: left;
     font-weight: 600;
     padding: 0 1em;
+    flex-direction: column;
+}
+
+.transfer-number .information-body span {
+    border-radius: 5px;
+    margin: 0.2rem 0;
+    background-color: var(---sixth-color);
+    padding: 0.2rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.transfer-number .information-body span:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
 }
 
 .vendor-address .information-title {
     width: 100%;
 }
 
+/*container ke 2 */
 
-
-
-
-
-
-.table-title{
+.table-title {
     font-size: larger;
     font-weight: bolder;
 }
-
-
-
 
 .card2-container {
     display: flex;
@@ -494,27 +573,6 @@ export default {
 .vendor-invoice .vendor-title {
     width: 60%;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .card3-container {
     display: flex;

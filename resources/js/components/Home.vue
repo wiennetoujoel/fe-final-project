@@ -657,9 +657,6 @@ export default {
     transition: ease-in-out;
 }
 
-.searchForm {
-}
-
 .searchContainer {
     position: relative;
     --size-button: 25px;

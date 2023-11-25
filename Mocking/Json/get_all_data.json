@@ -7,7 +7,7 @@
       "attentionOf": "John Doe",
       "quotationNumber": "123456",
       "customerPO": "-",
-      "status": "In-Progress",
+      "status": "Draft",
       "customerName": "ABC Company",
       "vendorAddress": "123 Main St, Anytown, USA",
       "costDetail":[{"detail1" : [{"desc" : "Delivery cost for goods"},{"qty": "10"},{"uom": "pcs"},{"price": "15.99"},{"gst": "5"},{"currency": "USD"}]},

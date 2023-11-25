@@ -65,14 +65,11 @@
                             </div>
                         </div>
 
-                        <button
-                            type="button"
-                            class="export-button"
-                            onclick="modify"
-                        >
+                        <button type="button" class="export-button">
                             <font-awesome-icon
                                 :icon="['fas', 'file-export']"
                                 style="color: #0dcaf0"
+                                @click="exportToExcel"
                             />
                             Export
                         </button>
@@ -82,7 +79,11 @@
 
             <div class="card2-container card">
                 <div class="dropdown-trigger">
-                    <button type="button" class="btn btn-info create-third-party" @click="toggleDropdown">
+                    <button
+                        type="button"
+                        class="btn btn-info create-third-party"
+                        @click="toggleDropdown"
+                    >
                         <font-awesome-icon :icon="['fas', 'plus']" />
                         Create 3rd Party Instruction
                     </button>
@@ -108,14 +109,27 @@
                             </li>
                         </ul>
                     </div> -->
-                    <div v-if="isDropdownVisible" ref="dropdown" class="dropdown" >
+                    <div
+                        v-if="isDropdownVisible"
+                        ref="dropdown"
+                        class="dropdown"
+                    >
                         <ul>
-                            <div @click="this.$router.push('/create')" class="options">
-                                <font-awesome-icon :icon="['fas', 'truck']" class="me-2" />
+                            <div
+                                @click="this.$router.push('/create')"
+                                class="options"
+                            >
+                                <font-awesome-icon
+                                    :icon="['fas', 'truck']"
+                                    class="me-2"
+                                />
                                 Logistic Instruction
                             </div>
                             <div @click="selectOption('SI')" class="options">
-                                <font-awesome-icon :icon="['fas', 'user-pen']" class="me-2" />
+                                <font-awesome-icon
+                                    :icon="['fas', 'user-pen']"
+                                    class="me-2"
+                                />
                                 Service Instruction
                             </div>
                         </ul>
@@ -447,6 +461,7 @@ import Navbar from "./Navbar.vue";
 import Sidebar from "./Sidebar.vue";
 import Header from "./Header.vue";
 import { mapGetters } from "vuex";
+import * as XLSX from "xlsx";
 
 export default {
     components: {
@@ -490,13 +505,26 @@ export default {
             const sortedAndFilteredProducts = this.filteredProducts
                 .slice()
                 .sort((a, b) => {
-                    const nameA = a[this.sortBy].toUpperCase(); //untuk menghindari case sensitive (huruf kapital dan biasa menjadi sama aja)
-                    const nameB = b[this.sortBy].toLowerCase();
+                    if (this.sortBy === "transferNumber") {
+                        const transferA =
+                            a.transferNumber[0].transfer1.toUpperCase();
+                        const transferB =
+                            b.transferNumber[0].transfer1.toLowerCase();
 
-                    if (this.sortOrder === "asc") {
-                        return nameA.localeCompare(nameB); //komparasi untuk asc
+                        if (this.sortOrder === "asc") {
+                            return transferA.localeCompare(transferB);
+                        } else {
+                            return transferB.localeCompare(transferA);
+                        }
                     } else {
-                        return nameB.localeCompare(nameA); //komparasi untuk desc
+                        const nameA = a[this.sortBy].toUpperCase();
+                        const nameB = b[this.sortBy].toLowerCase();
+
+                        if (this.sortOrder === "asc") {
+                            return nameA.localeCompare(nameB);
+                        } else {
+                            return nameB.localeCompare(nameA);
+                        }
                     }
                 })
                 .filter((product) => {
@@ -524,12 +552,7 @@ export default {
                         product.status.toLowerCase().includes(searchLowerCase)
                     );
                 });
-
-            if (sortedAndFilteredProducts.length === null) {
-                return ["No data's Found'"];
-            } else {
-                return sortedAndFilteredProducts;
-            }
+            return sortedAndFilteredProducts;
         },
     },
     methods: {
@@ -583,10 +606,34 @@ export default {
             this.$router.push({ name: "detail", params: { id: productId } });
             console.log("response");
         },
+        exportToExcel() {
+            console.log("export to excel response")
+            const ws = XLSX.utils.json_to_sheet(
+                this.formatDataForExport(this.filteredProducts)
+            );
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
-        selectOption(option) {
-
+            /* generate XLSX file*/
+            XLSX.writeFile(wb, "file_excel.xlsx");
         },
+
+        formatDataForExport(data) {
+            //  kasus transferNumber yang berbeda
+            return data.map((item) => {
+                const transferNumbers = item.transferNumber || [];
+                const transferValues = transferNumbers.map(
+                    (t) => Object.values(t)[0]
+                );
+
+                return {
+                    ...item,
+                    transferNumber: transferValues.join(", "), // Gabungkan nilai transferNumber menjadi satu string
+                };
+            });
+        },
+
+        selectOption(option) {},
     },
 };
 </script>
@@ -773,7 +820,7 @@ export default {
 .create-third-party {
     color: white;
 }
-.dropdown ul{
+.dropdown ul {
     position: absolute;
     border: 1px solid rgba(148, 148, 148, 0.571);
     border-radius: 4px;
@@ -854,7 +901,7 @@ tbody tr:hover {
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: #e8bcb9;
+    background-color: transparent;
     justify-content: center;
     font-size: smaller;
 }
@@ -898,8 +945,8 @@ tbody tr:hover {
 
 .sort-up.active,
 .sort-down.active {
-    border-bottom-color: white;
-    border-top-color: white;
+    border-bottom-color: var(--fifth-color);
+    border-top-color: var(--fifth-color);
 }
 
 @media (min-width: 1600px) {

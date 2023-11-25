@@ -6,7 +6,10 @@
         <div class="container">
             <Header />
             <div class="d-flex justify-content-end mb-3">
-                <BtnEmailExcel />
+                <template v-if="filteredProducts.status !== 'Draft'">
+                    <BtnEmailExcel />
+                </template>
+                <template v-else> </template>
             </div>
 
             <div class="card-container card" type="card">
@@ -190,7 +193,9 @@
                                 }}
                             </td>
                             <td>
-                                <font-awesome-icon :icon="['fas', 'right-long']" />
+                                <font-awesome-icon
+                                    :icon="['fas', 'right-long']"
+                                />
                             </td>
                             <td>
                                 {{
@@ -213,24 +218,92 @@
                                     )
                                 }}
                             </td>
-
                         </tr>
                     </tbody>
                 </table>
                 <div class="attachment-notes">
-                    <div class="attachment">Attachment</div>
-                    <div class="notes">Notes</div>
+                    <div class="attachment">
+                        <h5 class="attachment-title">Attachment</h5>
+                        <ul>
+                            <li
+                                v-for="(attachment, index) in attachments"
+                                :key="index"
+                            >
+                                {{ attachment.fileName }} -
+                                {{ attachment.uploadTime }}
+                            </li>
+                        </ul>
+                        <button
+                            type="button"
+                            class="attachment-button"
+                            @click="addAttachment"
+                        >
+                            <font-awesome-icon :icon="['fas', 'plus']" />
+                            Add Attachment
+                        </button>
+                        <input
+                            ref="fileInput"
+                            type="file"
+                            accept=".pdf"
+                            style="display: none"
+                            @change="handleFileChange"
+                        />
+                    </div>
+                    <div class="notes">
+                        <h5 class="notes-title">Notes</h5>
+                        <div class="notes-card card">haahahhaha</div>
+                    </div>
                 </div>
             </div>
-            <div class="vendor-invoice">
-                <div class="vendor-title">Vendor Invoice</div>
-                <button type="button" onclick="addVendorInvoice">
-                    + Add Vendor Invoice
-                </button>
-            </div>
-            <div class="card3-container card">
-                <div class="card3-title">For Internal Only</div>
+            <div class="vendor-invoice card">
+                <div class="vendor">
+                    <div class="vendor-title">
+                        <h5>Vendor Invoice</h5>
+                        <template v-if="isVendorDropdown === false">
+                            <font-awesome-icon
+                                :icon="['fas', 'caret-down']"
+                                class="vendor-dropdown-trigger"
+                                @click="vendorDropdown()"
+                            />
+                        </template>
 
+                        <template v-else>
+                            <font-awesome-icon
+                                :icon="['fas', 'caret-up']"
+                                class="vendor-dropdown-trigger"
+                                @click="vendorDropdown()"
+                            />
+                        </template>
+                    </div>
+                </div>
+                <template v-if="isVendorDropdown">
+                    <div class="vendor-dropdown">
+                        <button type="button" onclick="addVendorInvoice">
+                            <font-awesome-icon :icon="['fas', 'plus']" />
+                            Add Vendor Invoice
+                        </button>
+                        <div class="vendor-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <td>Invoice No.</td>
+                                        <td>Invoice Attachment</td>
+                                        <td>Supporting Document</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <td>tes1</td>
+                                    <td>tes2</td>
+                                    <td>tes3</td>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            
+            <h5 class="card3-title">For Internal Only</h5>
+            <div class="card3-container card">
                 <div class="card3-body">
                     <div class="attachment-internal">
                         Attachment
@@ -247,7 +320,6 @@
                 </div>
             </div>
             View Activity Note
-            {{ costDetailProducts }}
         </div>
     </div>
 </template>
@@ -255,7 +327,7 @@
 <script>
 import Navbar from "./Navbar.vue";
 import Sidebar from "./Sidebar.vue";
-import Header from "./Header.vue"
+import Header from "./Header.vue";
 import BtnEmailExcel from "./BtnEmailExcel.vue";
 import { mapGetters } from "vuex";
 
@@ -269,6 +341,7 @@ export default {
     data() {
         return {
             isExpanded: false,
+            isVendorDropdown: false,
         };
     },
 
@@ -307,36 +380,69 @@ export default {
         },
         calculateVAT(detail) {
             console.log("detail", detail);
-            
+
             if (detail.length > 0) {
                 const gst = detail.find((item) => item.gst)?.gst || 0;
                 const price = detail.find((item) => item.price)?.price || 0;
                 const qty = detail.find((item) => item.qty)?.qty || 0;
-                const result = gst * price * qty/100;
+                const result = (gst * price * qty) / 100;
                 return result.toFixed(2);
             }
-            return 0; 
+            return 0;
         },
-        calculateSubTotal(detail){
-
-            console.log("detail di subtotal", detail)
-            if (detail.length >0) {
+        calculateSubTotal(detail) {
+            console.log("detail di subtotal", detail);
+            if (detail.length > 0) {
                 const price = detail.find((item) => item.price)?.price || 0;
                 const qty = detail.find((item) => item.qty)?.qty || 0;
                 const result = price * qty;
                 return result.toFixed(2);
             }
-            return '0.00';
-            
+            return "0.00";
         },
-        calculateTotal(detail){
+        calculateTotal(detail) {
             const vat = parseFloat(this.calculateVAT(detail));
             const subTotal = parseFloat(this.calculateSubTotal(detail));
 
             const result = vat + subTotal;
 
-            return result.toFixed(2)    
-        }
+            return result.toFixed(2);
+        },
+        addAttachment() {
+            this.$refs.fileInput.click();
+        },
+        vendorDropdown() {
+            this.isVendorDropdown = !this.isVendorDropdown;
+        },
+        /*
+        handleFileChange(event) {
+            const fileInput = event.target;
+            const files = fileInput.files;
+
+            // Loop melalui file yang dipilih
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const isPDF = file.type === "application/pdf";
+
+                if (isPDF) {
+                    const uploadTime = new Date().toLocaleString();
+                    const attachment = {
+                        fileName: file.name,
+                        uploadTime: uploadTime,
+                    };
+
+                    // Tambahkan attachment ke dalam array
+                    this.attachments.push(attachment);
+                    this.$forceUpdate();
+                } else {
+                    // Handle jika file yang diunggah bukan PDF
+                    alert("File harus berupa PDF.");
+                }
+            }
+
+            // Bersihkan nilai input file untuk memungkinkan pemilihan file yang sama
+            fileInput.value = "";
+        },*/
     },
 };
 </script>
@@ -535,28 +641,130 @@ export default {
 .attachment-notes {
     display: flex;
     flex-direction: row;
+    padding-top: 1.5rem;
 }
 
-.attachment-notes .attachment {
+.attachment-notes .attachment,
+.attachment-notes .notes {
     width: 50%;
+}
+
+.attachment-button,
+.vendor-dropdown button {
+    color: #090909;
+    padding: 0.5rem 1.3rem;
+    border-radius: 0.5em;
+    background: #e8e8e8;
+    border: 1px solid #e8e8e8;
+    transition: all 0.3s;
+    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+.attachment-button:active,
+.vendor-dropdown button:active {
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+.notes-card {
+    width: 100%;
+    background-color: #f5f7f9;
+    color: #66686a;
+    border: none;
+    min-height: 5rem;
+    padding: 0.5rem;
 }
 
 .vendor-invoice {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    padding: 0.5rem;
 }
 
 .vendor-invoice .vendor-title {
-    width: 60%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    align-items: center;
 }
+
+.vendor-title h5 {
+    margin: 0;
+    margin-right: 0.7rem;
+}
+
+.vendor-dropdown {
+    display: flex;
+    flex-direction: column;
+}
+
+.vendor-dropdown button {
+    margin-top: 1rem;
+    width: max-content;
+}
+
+.vendor-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.vendor-table table thead {
+    background-color: var(--first-color);
+    color: white;
+}
+
+.vendor-table table tbody {
+    background-color: #f5f5f5;
+}
+
+.vendor-table table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.vendor-table table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.vendor-table table tbody tr:hover {
+    background-color: #e0e0e0;
+    transition: background-color 0.3s ease;
+}
+
+.vendor-table table th {
+    position: relative;
+    cursor: pointer;
+}
+
+/*container ke 3 */
 
 .card3-container {
     display: flex;
+    padding: 0.8rem;
+    border-radius: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.card3-title {
+    color: white;
+    background-color: var(--first-color);
+    width: 100%;
+    margin: 0;
+    padding: 0.8rem;
+    border-radius: 5px 5px 0 0;
 }
 
 .card3-container .card3-body {
     display: flex;
     flex-direction: row;
+    
 }
 
 .card3-container .card3-body .attachment-internal {
@@ -565,11 +773,35 @@ export default {
     width: 50%;
 }
 
+.attachment-internal button,
+.internal-note button
+{
+    margin-top: 1rem;
+    color: #090909;
+    font-size: smaller;
+    padding: 0.4rem 1.1rem;
+    border-radius: 0.5em;
+    background: #e8e8e8;
+    border: 1px solid #e8e8e8;
+    transition: all 0.3s;
+    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+    width: 10rem;
+}
+
+.attachment-internal button:active,
+.internal-note button:active
+{
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
 .card3-container .card3-body .internal-note {
     display: flex;
     flex-direction: column;
     width: 50%;
 }
+
+
 
 @media (max-width: 760px) {
 }

@@ -12,6 +12,19 @@ class ExampleController extends Controller{
 		return response()->json($json);
 	}
 
+	public function getAdmin()
+    {
+        $path = base_path() . "/Mocking/Json/admin_accounts.json";
+        $json = json_decode(file_get_contents($path), true);
+        return response()->json($json);
+    }
+
+	public function setAdmin(){
+		$path = base_path()."/Mocking/Json/success_put.json";
+		$json = json_decode(file_get_contents($path), true);
+		return response()->json($json);
+	}
+
 
 	/**public function postData(){
 		$path = base_path()."/Mocking/Json/success_post.json";

@@ -19,6 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/getAllData', 'Mocking\Controllers\ExampleController@getData');
+Route::get('/getAdminData', 'Mocking\Controllers\ExampleController@getAdmin');
+Route::get('/setAdminOnline', 'Mocking\Controllers\ExampleController@setAdmin');
+
 
 
 

@@ -31,7 +31,7 @@
                         <button
                             type="button"
                             class="terminate-button"
-                            onclick="terminate"
+                            @click="terminate"
                         >
                             <font-awesome-icon
                                 :icon="['fas', 'ban']"
@@ -52,6 +52,11 @@
                         </button>
                     </div>
                 </div>
+                <template v-if="popUpTerminate">
+                    <PopUpTerminate
+                        @emit-closePopUpTerminate="closePopUpTerminate"
+                    />
+                </template>
                 <div class="information">
                     <div class="logistic-type card">
                         <div class="information-title">Type</div>
@@ -160,7 +165,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <td class="table-title">Description</td>
+                            <td class="table-title-desc">Description</td>
                             <td class="table-title">QTY</td>
                             <td class="table-title">UOM</td>
                             <td class="table-title">Unit Price</td>
@@ -182,6 +187,10 @@
                                     'detail' + (index + 1)
                                 ]"
                                 :key="detailIndex"
+                                :class="{
+                                    'non-desc-cell': !detail.desc,
+                                    'desc-cell': detail.desc,
+                                }"
                             >
                                 {{
                                     detail.desc ||
@@ -192,26 +201,26 @@
                                     detail.currency
                                 }}
                             </td>
-                            <td>
+                            <td style="text-align: left">
                                 <font-awesome-icon
                                     :icon="['fas', 'right-long']"
                                 />
                             </td>
-                            <td>
+                            <td class="table-calculation">
                                 {{
                                     calculateVAT(
                                         product["detail" + (index + 1)]
                                     )
                                 }}
                             </td>
-                            <td>
+                            <td class="table-calculation">
                                 {{
                                     calculateSubTotal(
                                         product["detail" + (index + 1)]
                                     )
                                 }}
                             </td>
-                            <td>
+                            <td class="table-calculation">
                                 {{
                                     calculateTotal(
                                         product["detail" + (index + 1)]
@@ -219,28 +228,16 @@
                                 }}
                             </td>
                         </tr>
+                        <tr>
+                            <td colspan="5"></td>
+                            <td style="text-align: center">tes1</td>
+                        </tr>
                     </tbody>
                 </table>
                 <div class="attachment-notes">
                     <div class="attachment">
                         <h5 class="attachment-title">Attachment</h5>
-                        <ul>
-                            <li
-                                v-for="(attachment, index) in attachments"
-                                :key="index"
-                            >
-                                {{ attachment.fileName }} -
-                                {{ attachment.uploadTime }}
-                            </li>
-                        </ul>
-                        <button
-                            type="button"
-                            class="attachment-button"
-                            @click="addAttachment"
-                        >
-                            <font-awesome-icon :icon="['fas', 'plus']" />
-                            Add Attachment
-                        </button>
+
                         <input
                             ref="fileInput"
                             type="file"
@@ -251,7 +248,9 @@
                     </div>
                     <div class="notes">
                         <h5 class="notes-title">Notes</h5>
-                        <div class="notes-card card">haahahhaha</div>
+                        <div class="notes-card card">
+                            {{ filteredProducts.notes }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -278,7 +277,11 @@
                 </div>
                 <template v-if="isVendorDropdown">
                     <div class="vendor-dropdown">
-                        <button type="button" onclick="addVendorInvoice">
+                        <button
+                            type="button"
+                            @click="vendorInvoice"
+                            class="vendor-dropdown-button"
+                        >
                             <font-awesome-icon :icon="['fas', 'plus']" />
                             Add Vendor Invoice
                         </button>
@@ -289,37 +292,255 @@
                                         <td>Invoice No.</td>
                                         <td>Invoice Attachment</td>
                                         <td>Supporting Document</td>
+                                        <td></td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td>tes1</td>
-                                    <td>tes2</td>
-                                    <td>tes3</td>
+                                    <tr
+                                        v-if="
+                                            filteredProducts.vendorInvoice
+                                                .length < 1
+                                        "
+                                        class="no-vendor-data"
+                                    >
+                                        <td
+                                            colspan="4"
+                                            style="text-align: center"
+                                        >
+                                            No Data Found
+                                        </td>
+                                    </tr>
+                                    <tr
+                                        v-else
+                                        v-for="(
+                                            invoice, index
+                                        ) in filteredProducts.vendorInvoice"
+                                        :key="index"
+                                    >
+                                        <td>{{ invoice.vendorNumber }}</td>
+                                        <td>
+                                            <div
+                                                v-for="(
+                                                    attachment, indeks
+                                                ) in invoice.vendorAttachment"
+                                                :key="indeks"
+                                            >
+                                                {{ attachment.fileName }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="circle"
+                                                @mouseover="showVendorDropdown"
+                                                @mouseleave="hideVendorDropdown"
+                                            >
+                                                {{
+                                                    invoice.supportingDocument
+                                                        .length
+                                                }}
+                                                <div
+                                                    v-if="showingDropdown"
+                                                    class="dropdown"
+                                                >
+                                                    <div
+                                                        v-for="(
+                                                            document, index
+                                                        ) in invoice.supportingDocument"
+                                                        :key="index"
+                                                        class="dropdown-item"
+                                                    >
+                                                        {{
+                                                            document.documentName
+                                                        }}
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="vendor-actions-buttons">
+                                                <div
+                                                    class="delete-vendor-icon"
+                                                    @click="
+                                                        deleteVendor(
+                                                            invoice.vendorNumber
+                                                        )
+                                                    "
+                                                >
+                                                    <font-awesome-icon
+                                                        :icon="['fas', 'trash']"
+                                                    />
+                                                </div>
+
+                                                <div
+                                                    class="edit-vendor-icon"
+                                                    @click="
+                                                        editVendor(
+                                                            invoice.vendorNumber
+                                                        )
+                                                    "
+                                                >
+                                                    <font-awesome-icon
+                                                        :icon="[
+                                                            'fas',
+                                                            'pencil',
+                                                        ]"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr
+                                        v-if="
+                                            filteredProducts.vendorInvoice
+                                                .length > 0
+                                        "
+                                    >
+                                        <td colspan="4" class="vendor-last-row">
+                                            <div class="vendor-information">
+                                                Click the button if all vendor
+                                                invoices have been received
+                                            </div>
+
+                                            <div class="vendor-button">
+                                                <button
+                                                    type="button"
+                                                    @click="receivedInvoice"
+                                                >
+                                                    All Received
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                    <template v-if="popUpVendor">
+                        <PopUpVendor
+                            :editingVendorData="editingVendorData"
+                            :filteredProducts="filteredProducts"
+                            @emit-closePopUpVendor="closePopUpVendor"
+                        />
+                    </template>
+                    <template v-if="popUpDeleteVendor">
+                        <PopUpDeleteVendor
+                            :filteredProducts="filteredProducts"
+                            :documentIdToDelete="documentIdToDelete"
+                            @emit-closePopUpDeleteVendor="
+                                closePopUpDeleteVendor
+                            "
+                        />
+                    </template>
                 </template>
             </div>
-            
+
             <h5 class="card3-title">For Internal Only</h5>
             <div class="card3-container card">
                 <div class="card3-body">
                     <div class="attachment-internal">
                         Attachment
-                        <button type="button" onclick="addAttachment">
+                        <button type="button" @click="addAttachment">
                             + Add Attachment
                         </button>
+                        <div v-if="filteredProducts.attachments.length > 0">
+                            <ul>
+                                <li
+                                    class="attachment-list"
+                                    v-for="(
+                                        attachment, index
+                                    ) in filteredProducts.attachments"
+                                    :key="index"
+                                >
+                                    <div class="attachment-item">
+                                        <div class="attachment-icon">
+                                            <font-awesome-icon
+                                                :icon="['fas', 'paperclip']"
+                                                class="icon-for-attachment"
+                                            />
+                                        </div>
+                                        <div class="file-info">
+                                            <div class="file-name">
+                                                {{ attachment.fileName }}
+                                            </div>
+                                            <div class="file-uploader">
+                                                By {{ attachment.adminName }} on
+                                                {{ attachment.timeAdded }}
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="delete-icon"
+                                            @click="deleteAttachment(index)"
+                                        >
+                                            <font-awesome-icon
+                                                :icon="['fas', 'trash']"
+                                            />
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="internal-note">
                         Internal Note
-                        <button type="button" onclick="addNote">
+                        <button type="button" @click="addNote">
                             + Add Internal Note
                         </button>
+                        <div v-if="filteredProducts.internalNotes.length > 0">
+                            <ul>
+                                <li
+                                    v-for="note in filteredProducts.internalNotes"
+                                    :key="note.id"
+                                    class="note-list"
+                                >
+                                    <div class="note-container">
+                                        <div class="note-title">
+                                            <div class="note-main-title">
+                                                by {{ note.adminName }} on
+                                                {{ note.formattedDateTime }}
+                                            </div>
+                                            <div class="note-buttons">
+                                                <div
+                                                    class="delete-note"
+                                                    @click="deleteNote(note.id)"
+                                                >
+                                                    <font-awesome-icon
+                                                        :icon="['fas', 'trash']"
+                                                    />
+                                                </div>
+
+                                                <div
+                                                    class="edit-note"
+                                                    @click="editNote(note.id)"
+                                                >
+                                                    <font-awesome-icon
+                                                        :icon="[
+                                                            'fas',
+                                                            'pencil',
+                                                        ]"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="note-main-container">
+                                            {{ note.notes }}
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+
+                    <template v-if="popUpNote">
+                        <PopUpNote
+                            :filteredProducts="filteredProducts"
+                            :editingNoteData="editingNoteData"
+                            @emit-closePopUpNote="closePopUpNote"
+                        />
+                    </template>
                 </div>
             </div>
             View Activity Note
+            {{ filteredProducts }}
         </div>
     </div>
 </template>
@@ -330,6 +551,10 @@ import Sidebar from "./Sidebar.vue";
 import Header from "./Header.vue";
 import BtnEmailExcel from "./BtnEmailExcel.vue";
 import { mapGetters } from "vuex";
+import PopUpTerminate from "./PopUpTerminate.vue";
+import PopUpNote from "./PopUpNote.vue";
+import PopUpVendor from "./PopUpVendor.vue";
+import PopUpDeleteVendor from "./PopUpDeleteVendor.vue";
 
 export default {
     components: {
@@ -337,11 +562,20 @@ export default {
         sidebar: Sidebar,
         Header,
         BtnEmailExcel,
+        PopUpTerminate,
+        PopUpNote,
+        PopUpVendor,
+        PopUpDeleteVendor,
     },
     data() {
         return {
             isExpanded: false,
             isVendorDropdown: false,
+            popUpTerminate: false,
+            popUpNote: false,
+            popUpVendor: false,
+            showingDropdown: false,
+            popUpDeleteVendor: false,
         };
     },
 
@@ -360,7 +594,9 @@ export default {
     computed: {
         ...mapGetters({
             products: "example/getData", //minta ke ExampleController.php
+            adminName: "example/adminOnline",
         }),
+
         filteredProducts() {
             return (
                 this.products.find((product) => product.id === this.id) || {}
@@ -379,8 +615,6 @@ export default {
             this.$router.go(-1);
         },
         calculateVAT(detail) {
-            console.log("detail", detail);
-
             if (detail.length > 0) {
                 const gst = detail.find((item) => item.gst)?.gst || 0;
                 const price = detail.find((item) => item.price)?.price || 0;
@@ -391,7 +625,6 @@ export default {
             return 0;
         },
         calculateSubTotal(detail) {
-            console.log("detail di subtotal", detail);
             if (detail.length > 0) {
                 const price = detail.find((item) => item.price)?.price || 0;
                 const qty = detail.find((item) => item.qty)?.qty || 0;
@@ -408,41 +641,128 @@ export default {
 
             return result.toFixed(2);
         },
-        addAttachment() {
-            this.$refs.fileInput.click();
-        },
+
         vendorDropdown() {
             this.isVendorDropdown = !this.isVendorDropdown;
         },
-        /*
-        handleFileChange(event) {
-            const fileInput = event.target;
-            const files = fileInput.files;
 
-            // Loop melalui file yang dipilih
+        terminate() {
+            this.popUpTerminate = true;
+        },
+        closePopUpTerminate() {
+            this.popUpTerminate = false;
+        },
+
+        addAttachment() {
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.addEventListener("change", this.handleFileChange);
+            fileInput.click();
+        },
+        handleFileChange(event) {
+            const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                const isPDF = file.type === "application/pdf";
+                const timeAdded = new Date().toLocaleString("id-ID", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                });
 
-                if (isPDF) {
-                    const uploadTime = new Date().toLocaleString();
-                    const attachment = {
-                        fileName: file.name,
-                        uploadTime: uploadTime,
-                    };
+                // id atttachment
+                const idAttachment = `ATT-${new Date().getTime()}`;
 
-                    // Tambahkan attachment ke dalam array
-                    this.attachments.push(attachment);
-                    this.$forceUpdate();
-                } else {
-                    // Handle jika file yang diunggah bukan PDF
-                    alert("File harus berupa PDF.");
-                }
+                //push nilai ke dalam attahcments
+                this.filteredProducts.attachments.push({
+                    id: idAttachment,
+                    adminName: this.adminName,
+                    fileName: file.name,
+                    timeAdded,
+                });
             }
+        },
 
-            // Bersihkan nilai input file untuk memungkinkan pemilihan file yang sama
-            fileInput.value = "";
-        },*/
+        deleteAttachment(index) {
+            this.filteredProducts.attachments.splice(index, 1);
+        },
+
+        addNote() {
+            this.editingNoteData = null;
+            this.popUpNote = true;
+        },
+        closePopUpNote() {
+            this.popUpNote = false;
+        },
+
+        deleteNote(noteId) {
+            const index = this.filteredProducts.internalNotes.findIndex(
+                (note) => note.id === noteId
+            );
+
+            if (index !== -1) {
+                this.filteredProducts.internalNotes.splice(index, 1);
+            }
+        },
+        editNote(noteId) {
+            const noteToEdit = this.filteredProducts.internalNotes.find(
+                (note) => note.id === noteId
+            );
+
+            console.log('isi dari notetoedit', noteToEdit)
+
+            this.showPopUpNoteWithData(noteToEdit);
+        },
+        showPopUpNoteWithData(noteData) {
+            this.editingNoteData = noteData;
+            console.log("noteData", noteData);
+
+            this.popUpNote = true;
+        },
+
+        vendorInvoice() {
+            this.editingVendorData = [];
+            this.popUpVendor = true;
+
+            console.log('nilai editingVendorData ketika di tambah', this.editingVendorData)
+        },
+        closePopUpVendor() {
+            this.popUpVendor = false;
+        },
+
+        showVendorDropdown() {
+            this.showingDropdown = true;
+        },
+        hideVendorDropdown() {
+            this.showingDropdown = false;
+        },
+
+        deleteVendor(documentId) {
+            this.documentIdToDelete = documentId;
+
+            console.log("nilai documentId di deleteVendor", documentId);
+
+            this.popUpDeleteVendor = true;
+        },
+
+        editVendor(documentId) {
+            const vendorToEdit = this.filteredProducts.vendorInvoice.find(
+                (invoice) => invoice.vendorNumber === documentId
+            );
+
+            this.showPopUpVendorWithData(vendorToEdit);
+        },
+
+        showPopUpVendorWithData(vendorData) {
+            this.editingVendorData = vendorData;
+            console.log('nilai editingVendorData ketika diedit', this.editingVendorData)
+            this.popUpVendor = true;
+        },
+
+        closePopUpDeleteVendor() {
+            this.popUpDeleteVendor = false;
+        },
     },
 };
 </script>
@@ -626,10 +946,19 @@ export default {
 }
 
 /*container ke 2 */
+.table-title-desc {
+    font-size: larger;
+    font-weight: bolder;
+}
 
 .table-title {
     font-size: larger;
     font-weight: bolder;
+    text-align: center;
+}
+
+.desc-cell {
+    width: 18%;
 }
 
 .card2-container {
@@ -638,6 +967,14 @@ export default {
     padding: 0.8rem;
 }
 
+.non-desc-cell {
+    text-align: center;
+    width: 11%;
+}
+
+.table-calculation {
+    text-align: center;
+}
 .attachment-notes {
     display: flex;
     flex-direction: row;
@@ -650,7 +987,7 @@ export default {
 }
 
 .attachment-button,
-.vendor-dropdown button {
+.vendor-dropdown .vendor-dropdown-button {
     color: #090909;
     padding: 0.5rem 1.3rem;
     border-radius: 0.5em;
@@ -660,8 +997,12 @@ export default {
     box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
 }
 
+.vendor-dropdown-trigger {
+    cursor: pointer;
+}
+
 .attachment-button:active,
-.vendor-dropdown button:active {
+.vendor-dropdown .vendor-dropdown-button:active {
     color: #666;
     box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
 }
@@ -674,6 +1015,8 @@ export default {
     min-height: 5rem;
     padding: 0.5rem;
 }
+
+/*vendor container */
 
 .vendor-invoice {
     display: flex;
@@ -699,9 +1042,13 @@ export default {
     flex-direction: column;
 }
 
-.vendor-dropdown button {
+.vendor-dropdown .vendor-dropdown-button {
     margin-top: 1rem;
     width: max-content;
+}
+
+.no-vendor-data {
+    text-align: center;
 }
 
 .vendor-table table {
@@ -711,6 +1058,7 @@ export default {
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    margin-bottom: 20px;
 }
 
 .vendor-table table thead {
@@ -737,9 +1085,124 @@ export default {
     transition: background-color 0.3s ease;
 }
 
-.vendor-table table th {
+.vendor-table table {
     position: relative;
+    height: fit-content;
+}
+
+.vendor-last-row {
+    padding: 20px;
+    text-align: center;
+}
+
+.vendor-last-row .vendor-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 1rem;
+}
+
+.vendor-button button {
     cursor: pointer;
+    color: #090909;
+    padding: 0.5rem 1.3rem;
+    border-radius: 0.5em;
+    background: #e8e8e8;
+    border: 1px solid #e8e8e8;
+    transition: all 0.3s;
+    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+.vendor-button button:active {
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+.vendor-button button:hover {
+    transform: scale(1.05);
+}
+
+.vendor-last-row .vendor-information {
+    text-align: center;
+}
+
+.circle {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #3498db;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    display: none;
+    z-index: 700;
+    height: fit-content;
+    color: black;
+}
+
+.circle:hover .dropdown {
+    border-radius: 10px;
+    position: absolute;
+    background-color: #f5f5f5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    padding: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-size: smaller;
+}
+
+.dropdown-item {
+    padding: 0.3rem;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #e0e0e0;
+    transition: background-color 0.3s ease;
+    transform: scale(1.01);
+    border-radius: 17px;
+}
+
+.vendor-actions-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.vendor-actions-buttons .delete-vendor-icon {
+    color: rgb(192, 15, 15);
+    cursor: pointer;
+}
+
+.vendor-actions-buttons .delete-vendor-icon:hover {
+    color: red;
+    transform: scale(1.01);
+}
+
+.vendor-actions-buttons .edit-vendor-icon {
+    color: rgb(7, 150, 7);
+    cursor: pointer;
+}
+
+.vendor-actions-buttons .edit-vendor-icon:hover {
+    color: rgb(8, 243, 8);
+    transform: scale(1.01);
 }
 
 /*container ke 3 */
@@ -764,7 +1227,6 @@ export default {
 .card3-container .card3-body {
     display: flex;
     flex-direction: row;
-    
 }
 
 .card3-container .card3-body .attachment-internal {
@@ -774,8 +1236,7 @@ export default {
 }
 
 .attachment-internal button,
-.internal-note button
-{
+.internal-note button {
     margin-top: 1rem;
     color: #090909;
     font-size: smaller;
@@ -789,8 +1250,7 @@ export default {
 }
 
 .attachment-internal button:active,
-.internal-note button:active
-{
+.internal-note button:active {
     color: #666;
     box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
 }
@@ -801,7 +1261,104 @@ export default {
     width: 50%;
 }
 
+.attachment-list {
+    list-style: none;
+    margin-top: 0.5rem;
+}
 
+.attachment-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 90%;
+    margin: 0;
+    border-radius: 8px;
+    background-color: #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.attachment-item:hover {
+    background-color: #dad7d7;
+    transform: scale(1.005);
+}
+
+.attachment-icon {
+    height: 100%;
+    padding-right: 0.5rem;
+}
+
+.file-info .file-name {
+    font-size: smaller;
+}
+
+.file-info .file-uploader {
+    font-size: x-small;
+}
+
+.delete-icon {
+    color: rgb(192, 15, 15);
+    margin-left: auto;
+    margin-right: 0.5rem;
+}
+
+.delete-icon:hover {
+    color: red;
+}
+
+.note-list {
+    list-style: none;
+    margin-top: 0.5rem;
+}
+
+.note-container {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 0.5rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.note-title {
+    display: flex;
+    font-size: smaller;
+    color: #333;
+}
+
+.note-buttons {
+    display: flex;
+    margin-left: auto;
+    padding: 0 1rem;
+    gap: 0.8rem;
+}
+
+.delete-note {
+    color: rgb(192, 15, 15);
+    cursor: pointer;
+}
+
+.delete-note:hover {
+    color: red;
+    transform: scale(1.01);
+}
+
+.edit-note {
+    color: rgb(7, 150, 7);
+    cursor: pointer;
+}
+
+.edit-note:hover {
+    color: rgb(8, 243, 8);
+    transform: scale(1.01);
+}
+
+.note-main-container {
+    color: black;
+    padding: 0.5rem;
+    border-radius: 20px;
+    background-color: #f0eded;
+}
 
 @media (max-width: 760px) {
 }

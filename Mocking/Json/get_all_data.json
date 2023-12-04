@@ -10,8 +10,15 @@
       "status": "Draft",
       "customerName": "ABC Company",
       "vendorAddress": "123 Main St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc" : "Delivery cost for goods"},{"qty": "10"},{"uom": "pcs"},{"price": "15.99"},{"gst": "5"},{"currency": "USD"}]},
-                    {"detail2" : [{"desc" : "Delivery cost for goods"},{"qty": "20"},{"uom": "pcs"},{"price": "20.99"},{"gst": "5"},{"currency": "USD"}]}]
+      "costDetail":[{"detail1" : [{"desc" : "Delivery cost for goods"},{"qty": "10"},{"uom": "pcs"},{"price": "15.00"},{"gst": "5"},{"currency": "USD"}]},
+                    {"detail2" : [{"desc" : "Delivery cost for goods"},{"qty": "20"},{"uom": "pcs"},{"price": "20.00"},{"gst": "10"},{"currency": "USD"}]},
+                    {"detail3" : [{"desc" : "Delivery cost for goods"},{"qty": "30"},{"uom": "pcs"},{"price": "200.00"},{"gst": "1"},{"currency": "AUD"}]},
+                    {"detail4" : [{"desc" : "Delivery cost for goods"},{"qty": "40"},{"uom": "pcs"},{"price": "1000.00"},{"gst": "2"},{"currency": "IDR"}]}],
+      "notes": "joel gans pars",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []     
+            
     },
     {   
       "id": "LI-2021-0278 R03",
@@ -24,7 +31,11 @@
       "status": "Cancelled",
       "customerName": "XYZ Corporation",
       "vendorAddress": "456 Elm St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Shipping cost for items"},{"qty": "25"},{"uom": "kg"},{"price": "10.50"},{"gst": "8"},{"currency": "AUD"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Shipping cost for items"},{"qty": "25"},{"uom": "kg"},{"price": "10.50"},{"gst": "8"},{"currency": "AUD"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "LI-2022-0211 R02",
@@ -37,7 +48,11 @@
       "status": "Completed",
       "customerName": "123 Industries",
       "vendorAddress": "789 Oak St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Delivery charge for products"},{"qty": "5"},{"uom": "m"},{"price": "20.75"},{"gst": "3"},{"currency": "IDR"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Delivery charge for products"},{"qty": "5"},{"uom": "m"},{"price": "20.75"},{"gst": "3"},{"currency": "IDR"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "SI-2022-0211 R02",
@@ -50,7 +65,11 @@
       "status": "In-Progress",
       "customerName": "XYZ Corporation",
       "vendorAddress": "456 Elm St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Shipping cost for items"},{"qty": "15"},{"uom": "pcs"},{"price": "12.99"},{"gst": "7"},{"currency": "USD"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Shipping cost for items"},{"qty": "15"},{"uom": "pcs"},{"price": "12.99"},{"gst": "7"},{"currency": "USD"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "LI-2022-0211",
@@ -63,7 +82,11 @@
       "status": "Cancelled",
       "customerName": "ABC Company",
       "vendorAddress": "123 Main St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Delivery charge for goods"},{ "qty": "30"},{"uom": "kg"},{"price": "9.99"},{"gst": "4"},{"currency": "AUD"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Delivery charge for goods"},{ "qty": "30"},{"uom": "kg"},{"price": "9.99"},{"gst": "4"},{"currency": "AUD"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "SI-2022-0276 R01",
@@ -76,7 +99,11 @@
       "status": "Completed",
       "customerName": "123 Industries",
       "vendorAddress": "789 Oak St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Shipping cost for products"},{ "qty": "20"},{"uom": "m"},{"price": "18.50"},{"gst": "2"},{"currency": "IDR"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Shipping cost for products"},{ "qty": "20"},{"uom": "m"},{"price": "18.50"},{"gst": "2"},{"currency": "IDR"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "SI-2022-0211 R03",
@@ -89,7 +116,11 @@
       "status": "In-Progress",
       "customerName": "XYZ Corporation",
       "vendorAddress": "456 Elm St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Delivery cost for items"},{ "qty": "8"},{"uom": "pcs"},{"price": "14.99"},{"gst": "6"},{"currency": "USD"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Delivery cost for items"},{ "qty": "8"},{"uom": "pcs"},{"price": "14.99"},{"gst": "6"},{"currency": "USD"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "SI-2022-0211",
@@ -102,7 +133,11 @@
       "status": "Cancelled",
       "customerName": "ABC Company",
       "vendorAddress": "123 Main St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Shipping cost for goods"},{ "qty": "35"},{"uom": "kg"},{"price": "11.50"},{"gst": "9"},{"currency": "AUD"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Shipping cost for goods"},{ "qty": "35"},{"uom": "kg"},{"price": "11.50"},{"gst": "9"},{"currency": "AUD"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "LI-2021-0054",
@@ -115,7 +150,11 @@
       "status": "Completed",
       "customerName": "123 Industries",
       "vendorAddress": "789 Oak St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Delivery charge for products"},{ "qty": "3"},{"uom": "m"},{"price": "22.75"},{"gst": "1"},{"currency": "IDR"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Delivery charge for products"},{ "qty": "3"},{"uom": "m"},{"price": "22.75"},{"gst": "1"},{"currency": "IDR"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "SI-2021-0111 R01",
@@ -128,7 +167,11 @@
       "status": "In-Progress",
       "customerName": "XYZ Corporation",
       "vendorAddress": "456 Elm St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Shipping cost for items"},{ "qty": "12"},{"uom": "pcs"},{"price": "17.99"},{"gst": "1"},{"currency": "IDR"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Shipping cost for items"},{ "qty": "12"},{"uom": "pcs"},{"price": "17.99"},{"gst": "1"},{"currency": "IDR"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "LI-2022-0211 R03",
@@ -141,7 +184,11 @@
       "status": "Cancelled",
       "customerName": "ABC Company",
       "vendorAddress": "123 Main St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Delivery cost for goods"},{ "qty": "40"},{"uom": "kg"},{"price": "8.99"},{"gst": "5"},{"currency": "AUD"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Delivery cost for goods"},{ "qty": "40"},{"uom": "kg"},{"price": "8.99"},{"gst": "5"},{"currency": "AUD"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "SI-2022-0097 R01",
@@ -154,21 +201,29 @@
       "status": "Completed",
       "customerName": "123 Industries",
       "vendorAddress": "789 Oak St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Shipping cost for products"},{ "qty": "18"},{"uom": "m"},{"price": "16.50"},{"gst": "3"},{"currency": "IDR"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Shipping cost for products"},{ "qty": "18"},{"uom": "m"},{"price": "16.50"},{"gst": "3"},{"currency": "IDR"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
-    {
-      "id": "LI-2021-0671",
-      "transferNumber": [{"transfer1" : "TRF-2022-0033"}],
-      "type": "LI",
-      "assignedVendor": "X- Transport",
-      "attentionOf": "Logan Johnson",
-      "quotationNumber": "135794",
-      "customerPO": "-",
-      "status": "In-Progress",
-      "customerName": "XYZ Corporation",
-      "vendorAddress": "456 Elm St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Delivery charge for items"},{ "qty": "6"},{"uom": "pcs"},{"price": "13.99"},{"gst": "7"},{"currency": "USD"}]}]
-    },
+      {
+        "id": "LI-2021-0671",
+        "transferNumber": [{"transfer1" : "TRF-2022-0033"}],
+        "type": "LI",
+        "assignedVendor": "X- Transport",
+        "attentionOf": "Logan Johnson",
+        "quotationNumber": "135794",
+        "customerPO": "-",
+        "status": "In-Progress",
+        "customerName": "XYZ Corporation",
+        "vendorAddress": "456 Elm St, Anytown, USA",
+        "costDetail":[{"detail1" : [{"desc": "Delivery charge for items"},{ "qty": "6"},{"uom": "pcs"},{"price": "13.99"},{"gst": "7"},{"currency": "USD"}]}],
+        "notes": "joel gans pars",
+        "attachments" : [],
+        "internalNotes" : [],
+        "vendorInvoice" : []  
+      },
     {
       "id": "SI-2021-0222",
       "transferNumber": [{"transfer1" : "TRF-2022-0034"}],
@@ -180,7 +235,11 @@
       "status": "Cancelled",
       "customerName": "ABC Company",
       "vendorAddress": "123 Main St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Shipping cost for goods"},{ "qty": "45"},{"uom": "kg"},{"price": "10.99"},{"gst": "4"},{"currency": "AUD"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Shipping cost for goods"},{ "qty": "45"},{"uom": "kg"},{"price": "10.99"},{"gst": "4"},{"currency": "AUD"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     },
     {
       "id": "LI-2021-0123 R01",
@@ -193,6 +252,10 @@
       "status": "Completed",
       "customerName": "123 Industries",
       "vendorAddress": "789 Oak St, Anytown, USA",
-      "costDetail":[{"detail1" : [{"desc": "Delivery cost for products"},{ "qty": "9"},{"uom": "m"},{"price": "21.99"},{"gst": "2"},{"currency": "IDR"}]}]
+      "costDetail":[{"detail1" : [{"desc": "Delivery cost for products"},{ "qty": "9"},{"uom": "m"},{"price": "21.99"},{"gst": "2"},{"currency": "IDR"}]}],
+      "notes": "",
+      "attachments" : [],
+      "internalNotes" : [],
+      "vendorInvoice" : []  
     }
   ]

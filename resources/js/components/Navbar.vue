@@ -12,7 +12,7 @@
           </li>
           <li class="navbar-item">|</li>
           <li class="navbar-item">
-            <span>Good Morning, Joel</span>
+            <span>Good Morning, {{ adminOnline }}</span>
           </li>
           <li>
             <font-awesome-icon id="user-icon" :icon="['far', 'user']" />
@@ -20,6 +20,16 @@
       </ul>
   </div>
 </template>
+<script>
+import { mapGetters } from 'vuex';
+export default {
+  computed:{
+    ...mapGetters({
+            adminOnline: "example/adminOnline", //minta ke getters
+        }),
+  }
+}
+</script>
 
 <style scoped>
 
@@ -31,7 +41,7 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 position: fixed;
-z-index: 999;
+z-index: 888;
 width: 100%;
 height: 5vw;
 min-height: 2.5rem;

@@ -488,7 +488,7 @@ export default {
 
     computed: {
         ...mapGetters({
-            products: "example/getData", //minta ke ExampleController.php
+            products: "example/getData", //minta ke getters
         }),
 
         filteredProducts() {

@@ -25,6 +25,8 @@ const router = createRouter({
     routes
 })
 
+import LandingPage from './components/LandingPage.vue';
+app.component('landing-page', LandingPage)
 
 import NotFound from './components/NotFoundComponent.vue';
 app.component ('not-found', NotFound);
@@ -41,7 +43,17 @@ app.component('navbar', Navbar)
 import Sidebar from './components/Navbar.vue';
 app.component('sidebar', Sidebar)
 
+import PopUpTerminate from './components/PopUpTerminate.vue';
+app.component('popupTerminate', PopUpTerminate)
 
+import PopUpNote from './components/PopUpNote.vue';
+app.component('popupNote', PopUpNote)
+
+import PopUpVendor from './components/PopUpVendor.vue';
+app.component('popupVendor', PopUpVendor)
+
+import PopUpDeleteVendor from './components/PopUpDeleteVendor.vue';
+app.component('popUpDeleteVendor', PopUpDeleteVendor)
 
 
 

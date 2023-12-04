@@ -2,6 +2,7 @@ import NotFound from './components/NotFoundComponent.vue'
 import Home from './components/Home.vue'
 import Detail from './components/Detail.vue'
 import Create from './components/Create.vue'
+import LandingPage from './components/LandingPage'
 
 const routes =[
     {
@@ -10,7 +11,7 @@ const routes =[
         component: NotFound
     },
     {
-        path : '/',
+        path : '/home',
         name : 'home',
         component : Home
     },
@@ -25,6 +26,12 @@ const routes =[
         name : 'create',
         component : Create
     },
+
+    {
+        path : '/',
+        name : 'welcome',
+        component : LandingPage
+    }
 ]
 
 export default routes

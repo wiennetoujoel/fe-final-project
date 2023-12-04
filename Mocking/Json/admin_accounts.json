@@ -1,0 +1,6 @@
+{
+    "admin": [
+        { "adminId": 1, "username": "Wiennetou Joel", "password": "joelganteng123" },
+        { "adminId": 2, "username": "Diaz Zaid", "password": "diaztampan123" }
+    ]
+}

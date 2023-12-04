@@ -1,7 +1,9 @@
 const getDefaultState = () => {
 	return {
 		data: [],
-		
+		user : [],
+		adminLoggedIn : "Wiennetou Joel",
+
 	}
 }
 

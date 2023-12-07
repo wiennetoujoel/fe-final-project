@@ -4,10 +4,6 @@
       <font-awesome-icon :icon="['fas', 'paper-plane']" style="color: #ae445a" />
       Send Email
     </button>
-    <button type="button" class="export-button" @click="exportExcel">
-      <font-awesome-icon :icon="['fas', 'file-export']" style="color: #ae445a" />
-      Export
-    </button>
   </div>
 
   <!-- popup email -->
@@ -18,6 +14,7 @@
 
 <script>
 import PopupEmail from './PopupEmail.vue'
+
 export default {
   components: {
     PopupEmail,
@@ -33,9 +30,6 @@ export default {
     },
     closePopupEmail() {
       this.popupEmailShow = false;
-    },
-    exportExcel() {
-      console.log("export excel")
     },
     
   }

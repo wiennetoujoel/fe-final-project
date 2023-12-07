@@ -62,7 +62,11 @@
                 />
             </p>
         </div>
-        <div v-if="is3rdPartyVisible" class="third-party-options list">
+        <div
+            v-if="is3rdPartyVisible"
+            class="third-party-options list"
+            @click="navigateToHome"
+        >
             <font-awesome-icon :icon="['far', 'handshake']" />
             <p class="sidebar2-label">3rd Party Instruction</p>
         </div>
@@ -128,6 +132,12 @@ export default {
                 }
             }
         },
+        navigateToHome() {
+            this.$router.push({
+                path: "/home",
+                name: "home"
+            });
+        },
     },
 };
 </script>
@@ -143,7 +153,7 @@ export default {
     padding: 0.4rem;
     overflow-x: hidden;
     width: 2.2rem;
-    height: 100vw;
+    height: 100vh;
     padding-top: 2rem;
 
     background-color: white;
@@ -179,7 +189,7 @@ export default {
 .sidebar-expanded {
     position: fixed;
     z-index: 1;
-    height: 100vw;
+    height: 100vh;
     padding: 0.45em;
     cursor: pointer;
     padding-top: 2rem;

@@ -358,7 +358,6 @@ export default {
 
 .description .input-class {
     width: 100%;
-    min-height: 5vw;
     background-color: #fcfbfb;
     color: black;
     border: 1px solid #ddd;

@@ -945,8 +945,8 @@ tbody tr:hover {
 
 .sort-up.active,
 .sort-down.active {
-    border-bottom-color: var(--fifth-color);
-    border-top-color: var(--fifth-color);
+    border-bottom-color:#8f8e8e;
+    border-top-color: #8f8e8e;
 }
 
 @media (min-width: 1600px) {

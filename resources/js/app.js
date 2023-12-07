@@ -55,6 +55,9 @@ app.component('popupVendor', PopUpVendor)
 import PopUpDeleteVendor from './components/PopUpDeleteVendor.vue';
 app.component('popUpDeleteVendor', PopUpDeleteVendor)
 
+import PopUpReceivedVendor from './components/PopUpReceivedVendor.vue';
+app.component('popUpReceivedVendor', PopUpReceivedVendor)
+
 
 
 app.use(router).use(store).

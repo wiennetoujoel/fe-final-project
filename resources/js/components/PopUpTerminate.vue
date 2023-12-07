@@ -19,11 +19,45 @@
 
             <div class="attachment">
                 <div class="attachment-tile">Attachment</div>
-                <button type="button" class="attachment-button">
+                <button type="button" class="attachment-button" @click="addVendorAttachment">
                     <font-awesome-icon :icon="['fas', 'plus']" />
                     Add Attachment
                 </button>
-                
+                <div v-if="vendorAttachment.length > 0">
+                    <ul>
+                        <li
+                            class="attachment-list"
+                            v-for="(attachment, index) in vendorAttachment"
+                            :key="index"
+                        >
+                            <div class="attachment-item">
+                                <div class="attachment-icon">
+                                    <font-awesome-icon
+                                        :icon="['fas', 'paperclip']"
+                                        class="icon-for-attachment"
+                                    />
+                                </div>
+                                <div class="file-info">
+                                    <div class="file-name">
+                                        {{ attachment.fileName }}
+                                    </div>
+                                    <div class="file-uploader">
+                                        By {{ attachment.adminName }} on
+                                        {{ attachment.timeAdded }}
+                                    </div>
+                                </div>
+                                <div
+                                    class="delete-icon"
+                                    @click="deleteAttachment(index)"
+                                >
+                                    <font-awesome-icon
+                                        :icon="['fas', 'trash']"
+                                    />
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="action-buttons">
@@ -50,6 +84,13 @@
 import { mapGetters } from 'vuex';
 
 export default {
+    data(){
+        return{
+            vendorAttachment: []
+        }
+    },  
+
+    props:["filteredProducts"],
     computed:{
         ...mapGetters({
             adminOnline: "example/adminOnline", //minta ke getters
@@ -62,9 +103,64 @@ export default {
         },
 
         submitPopUpTerminate() {
-            this.$emit("emit-closePopUpTerminate");
+            const terminateInfo ={
+                terminateMessage : this.userInput,
+                vendorAttachment : this.vendorAttachment
+            }
 
-            
+            this.filteredProducts.terminateStatus.push(terminateInfo);
+            this.filteredProducts.status = 'Cancelled';
+
+            this.$emit("emit-closePopUpTerminate"); 
+        },
+        addVendorAttachment() {
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.addEventListener("change", this.handleVendorAttachment);
+            fileInput.click();
+        },
+
+        handleVendorAttachment(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const timeAdded = new Date().toLocaleString("id-ID", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                });
+
+                // id atttachment
+                const idAttachment = `ATT-${new Date().getTime()}`;
+
+                const newAttachment = {
+                    attachmentId: idAttachment,
+                    fileName: file.name,
+                    adminName: this.adminOnline,
+                    timeAdded,
+                };
+
+                //push nilai ke dalam attahcments
+                this.vendorAttachment.push(newAttachment);
+            }
+
+            //sembunyikan button attachment
+            this.$nextTick(() => {
+                if (this.vendorAttachment.length > 0) {
+                    const attachmentButton = document.querySelector(
+                        ".vendor-attachment-button"
+                    );
+                    if (attachmentButton) {
+                        attachmentButton.style.display = "none";
+                    }
+                }
+            });
+        },
+
+        deleteAttachment(index) {
+            this.vendorAttachment.splice(index, 1);
         },
     },
 };
@@ -198,6 +294,52 @@ export default {
 
 .submit-button:hover {
   background-color: #27ae60; 
+}
+
+.attachment-list {
+    list-style: none;
+    margin-top: 0.5rem;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 90%;
+    margin: 0;
+    border-radius: 8px;
+    background-color: #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.attachment-item:hover {
+    background-color: #dad7d7;
+    transform: scale(1.005);
+}
+
+.attachment-icon {
+    height: 100%;
+    padding-right: 0.5rem;
+}
+
+.file-info .file-name {
+    font-size: smaller;
+}
+
+.file-info .file-uploader {
+    font-size: x-small;
+}
+
+.delete-icon {
+    color: rgb(192, 15, 15);
+    margin-left: auto;
+    margin-right: 0.5rem;
+}
+
+.delete-icon:hover {
+    color: red;
 }
 
 </style>

@@ -4,10 +4,25 @@
     <div class="main-container">
         <sidebar />
         <div class="container">
-            <Header />
+            <div class="container-header">
+                <customHeader  :filteredProducts = "filteredProducts"/>
+            </div>
+         
+
             <div class="d-flex justify-content-end mb-3">
                 <template v-if="filteredProducts.status !== 'Draft'">
                     <BtnEmailExcel />
+                    <button
+                        type="button"
+                        class="export-button"
+                        @click="exportToPDF"
+                    >
+                        <font-awesome-icon
+                            :icon="['fas', 'file-export']"
+                            style="color: #ae445a"
+                        />
+                        Export
+                    </button>
                 </template>
                 <template v-else> </template>
             </div>
@@ -27,11 +42,17 @@
                             Back
                         </button>
                     </div>
-                    <div class="terminate-modify">
+                    <div
+                        class="terminate-modify"
+                        v-if="
+                            filteredProducts.status !== 'Completed' &&
+                            filteredProducts.status !== 'Cancelled'
+                        "
+                    >
                         <button
                             type="button"
                             class="terminate-button"
-                            @click="terminate"
+                            @click="terminate(filteredProducts.status)"
                         >
                             <font-awesome-icon
                                 :icon="['fas', 'ban']"
@@ -54,6 +75,7 @@
                 </div>
                 <template v-if="popUpTerminate">
                     <PopUpTerminate
+                        :filteredProducts="filteredProducts"
                         @emit-closePopUpTerminate="closePopUpTerminate"
                     />
                 </template>
@@ -162,7 +184,7 @@
 
             <div class="card2-container card">
                 <h5>Cost Detail</h5>
-                <table>
+                <table class="cost-detail-table">
                     <thead>
                         <tr>
                             <td class="table-title-desc">Description</td>
@@ -228,23 +250,90 @@
                                 }}
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="5"></td>
-                            <td style="text-align: center">tes1</td>
+
+                        <tr
+                            v-for="currency in uniqueCurrencies"
+                            :key="currency"
+                            class="table-by-currency"
+                        >
+                            <td
+                                colspan="5"
+                                style="background-color: white"
+                            ></td>
+                            <td style="text-align: center">{{ currency }}</td>
+                            <td style="text-align: left">
+                                <font-awesome-icon
+                                    :icon="['fas', 'right-long']"
+                                />
+                            </td>
+                            <td style="text-align: center">
+                                {{ calculateVATByCurrency(currency) }}
+                            </td>
+                            <td style="text-align: center">
+                                {{ calculateSubTotalByCurrency(currency) }}
+                            </td >
+                            <td style="text-align: center">
+                                {{ calculateTotalByCurrency(currency) }}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="attachment-notes">
-                    <div class="attachment">
-                        <h5 class="attachment-title">Attachment</h5>
-
-                        <input
-                            ref="fileInput"
-                            type="file"
-                            accept=".pdf"
-                            style="display: none"
-                            @change="handleFileChange"
-                        />
+                    <div
+                        class="terminated"
+                        v-if="
+                            filteredProducts.status === 'Cancelled' &&
+                            filteredProducts.terminateStatus
+                        "
+                    >
+                        <h5 class="terminated-title">Terminated Info</h5>
+                        <div class="terminated-info">
+                            Terminated Description
+                        </div>
+                        <div class="terminated-message">
+                            {{
+                                filteredProducts.terminateStatus[0]
+                                    .terminateMessage
+                            }}
+                        </div>
+                        <div class="terminated-attachment">Attachments</div>
+                        <div
+                            v-if="
+                                filteredProducts.terminateStatus[0]
+                                    .vendorAttachment &&
+                                filteredProducts.terminateStatus[0]
+                                    .vendorAttachment.length > 0
+                            "
+                        >
+                            <ul style="padding: 0">
+                                <li
+                                    class="attachment-list"
+                                    v-for="(
+                                        attachment, index
+                                    ) in filteredProducts.terminateStatus[0]
+                                        .vendorAttachment"
+                                    :key="index"
+                                >
+                                    <div class="attachment-item">
+                                        <div class="attachment-icon">
+                                            <font-awesome-icon
+                                                :icon="['fas', 'paperclip']"
+                                                class="icon-for-attachment"
+                                            />
+                                        </div>
+                                        <div class="file-info">
+                                            <div class="file-name">
+                                                {{ attachment.fileName }}
+                                            </div>
+                                            <div class="file-uploader">
+                                                By {{ attachment.adminName }} on
+                                                {{ attachment.timeAdded }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="notes">
                         <h5 class="notes-title">Notes</h5>
@@ -277,14 +366,21 @@
                 </div>
                 <template v-if="isVendorDropdown">
                     <div class="vendor-dropdown">
-                        <button
-                            type="button"
-                            @click="vendorInvoice"
-                            class="vendor-dropdown-button"
+                        <template
+                            v-if="
+                                filteredProducts.status !== 'Completed' &&
+                                filteredProducts.status !== 'Cancelled'
+                            "
+                            ><button
+                                type="button"
+                                @click="vendorInvoice"
+                                class="vendor-dropdown-button"
+                            >
+                                <font-awesome-icon :icon="['fas', 'plus']" />
+                                Add Vendor Invoice
+                            </button></template
                         >
-                            <font-awesome-icon :icon="['fas', 'plus']" />
-                            Add Vendor Invoice
-                        </button>
+
                         <div class="vendor-table">
                             <table>
                                 <thead>
@@ -389,32 +485,58 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr
+                                    <template
                                         v-if="
-                                            filteredProducts.vendorInvoice
-                                                .length > 0
+                                            filteredProducts.status !==
+                                                'Completed' &&
+                                            filteredProducts.status !==
+                                                'Cancelled'
                                         "
                                     >
-                                        <td colspan="4" class="vendor-last-row">
-                                            <div class="vendor-information">
-                                                Click the button if all vendor
-                                                invoices have been received
-                                            </div>
+                                        <tr
+                                            v-if="
+                                                filteredProducts.vendorInvoice
+                                                    .length > 0
+                                            "
+                                        >
+                                            <td
+                                                colspan="4"
+                                                class="vendor-last-row"
+                                            >
+                                                <div class="vendor-information">
+                                                    Click the button if all
+                                                    vendor invoices have been
+                                                    received
+                                                </div>
 
-                                            <div class="vendor-button">
-                                                <button
-                                                    type="button"
-                                                    @click="receivedInvoice"
-                                                >
-                                                    All Received
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                                <div class="vendor-button">
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            receivedInvoice(
+                                                                filteredProducts.id
+                                                            )
+                                                        "
+                                                    >
+                                                        All Received
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                    <template v-if="popUpReceivedVendor">
+                        <PopUpReceivedVendor
+                            :filteredProducts="filteredProducts"
+                            :terminateId="terminateId"
+                            @emit-closePopUpReceivedVendor="
+                                closePopUpReceivedVendor
+                            "
+                        />
+                    </template>
                     <template v-if="popUpVendor">
                         <PopUpVendor
                             :editingVendorData="editingVendorData"
@@ -540,7 +662,153 @@
                 </div>
             </div>
             View Activity Note
-            {{ filteredProducts }}
+            {{ costDetailProducts }}
+        </div>
+    </div>
+    <div class="convert-to-pdf">
+        <div id="pdf" ref="document">
+            <div class="title-container">
+                <div class="company-container">
+                    <div class="image-container">
+                        <img src="../../images/company.png" />
+                    </div>
+                </div>
+                <div
+                    class="instruction-container"
+                    v-if="filteredProducts.type === 'SI'"
+                >
+                    Service Instruction
+                </div>
+                <div class="instruction-container" v-else>
+                    Logistic Instruction
+                </div>
+            </div>
+            <div class="table-1-container">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Issue By</td>
+                            <td>{{ adminName }}</td>
+                            <td>Date of Issue</td>
+                            <td>{{ formattedDate }}</td>
+                        </tr>
+                        <tr>
+                            <td v-if="filteredProducts.type === 'SI'">
+                                SI Number/Rev
+                            </td>
+                            <td v-else>LI Number/Rev</td>
+                            <td>{{ filteredProducts.id }}</td>
+                            <td>Transaction No.</td>
+                            <td>
+                                <span
+                                    v-for="(
+                                        transfer, index
+                                    ) in filteredProducts.transferNumber"
+                                    :key="index"
+                                >
+                                    {{ transfer["transfer" + (index + 1)] }}
+
+                                    {{
+                                        index <
+                                        filteredProducts.transferNumber.length -
+                                            1
+                                            ? ", "
+                                            : ""
+                                    }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Customer</td>
+                            <td>{{ filteredProducts.customerName }}</td>
+                            <td>Customer PO</td>
+                            <td>{{ filteredProducts.customerPO }}</td>
+                        </tr>
+                        <tr>
+                            <td>Attention Of</td>
+                            <td>{{ filteredProducts.attentionOf }}</td>
+                            <td>Vendor Quotation</td>
+                            <td>{{ filteredProducts.quotationNumber }}</td>
+                        </tr>
+                        <tr>
+                            <td>Issue To</td>
+                            <td>{{ filteredProducts.assignedVendor }}</td>
+                            <td>Invoice To</td>
+                            <td>{{ filteredProducts.invoiceTo }}</td>
+                        </tr>
+                        <tr>
+                            <td>Vendor Address</td>
+                            <td colspan="3">
+                                {{ filteredProducts.vendorAddress }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-2-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <td colspan="7">Detail of Cost</td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>Quantity</td>
+                            <td>UOM</td>
+                            <td>Unit Price</td>
+                            <td>GST(%)</td>
+                            <td>Currency</td>
+                            <td>Total</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(product, index) in costDetailProducts"
+                            :key="index"
+                        >
+                            <td
+                                v-for="(detail, detailIndex) in product[
+                                    'detail' + (index + 1)
+                                ]"
+                                :key="detailIndex"
+                                :class="{
+                                    'non-desc-cell': !detail.desc,
+                                    'desc-cell': detail.desc,
+                                }"
+                            >
+                                {{
+                                    detail.desc ||
+                                    detail.qty ||
+                                    detail.uom ||
+                                    detail.price ||
+                                    detail.gst ||
+                                    detail.currency
+                                }}
+                            </td>
+                            <td style="text-align: center">
+                                {{
+                                    calculateTotal(
+                                        product["detail" + (index + 1)]
+                                    )
+                                }}
+                            </td>
+                        </tr>
+                        <tr
+                            v-for="currency in uniqueCurrencies"
+                            :key="currency"
+                        >
+                            <td colspan="4"></td>
+                            <td style="text-align: right; font-weight: 600">
+                                Grand Total
+                            </td>
+                            <td style="text-align: center">{{ currency }}</td>
+                            <td class="table-calculation" style="text-align: center">
+                                {{ calculateTotalByCurrency(currency) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -548,24 +816,28 @@
 <script>
 import Navbar from "./Navbar.vue";
 import Sidebar from "./Sidebar.vue";
-import Header from "./Header.vue";
+import CustomHeader from "./Header.vue";
 import BtnEmailExcel from "./BtnEmailExcel.vue";
 import { mapGetters } from "vuex";
 import PopUpTerminate from "./PopUpTerminate.vue";
 import PopUpNote from "./PopUpNote.vue";
 import PopUpVendor from "./PopUpVendor.vue";
 import PopUpDeleteVendor from "./PopUpDeleteVendor.vue";
+import PopUpReceivedVendor from "./PopUpReceivedVendor.vue";
+
+import html2pdf from "html2pdf.js";
 
 export default {
     components: {
         navbar: Navbar,
         sidebar: Sidebar,
-        Header,
+        customHeader: CustomHeader,
         BtnEmailExcel,
         PopUpTerminate,
         PopUpNote,
         PopUpVendor,
         PopUpDeleteVendor,
+        PopUpReceivedVendor,
     },
     data() {
         return {
@@ -576,6 +848,8 @@ export default {
             popUpVendor: false,
             showingDropdown: false,
             popUpDeleteVendor: false,
+            popUpReceivedVendor: false,
+            formattedDate: this.getCurrentDate(),
         };
     },
 
@@ -609,6 +883,23 @@ export default {
 
             return selectedProduct.costDetail;
         },
+
+        uniqueCurrencies() {
+            const currencies = new Set();
+            this.costDetailProducts.forEach((product) => {
+                Object.values(product).forEach((detail) => {
+                    detail.forEach((item) => {
+                        if (item.currency) {
+                            currencies.add(item.currency);
+                        }
+                    });
+                });
+            });
+            const uniqueCurrenciesArray = Array.from(currencies);
+            console.log("Unique Currencies:", uniqueCurrenciesArray);
+
+            return uniqueCurrenciesArray;
+        },
     },
     methods: {
         backwards() {
@@ -620,26 +911,207 @@ export default {
                 const price = detail.find((item) => item.price)?.price || 0;
                 const qty = detail.find((item) => item.qty)?.qty || 0;
                 const result = (gst * price * qty) / 100;
-                return result.toFixed(2);
+
+                return this.formatNumber(result);
             }
-            return 0;
+            return "0.00";
         },
         calculateSubTotal(detail) {
             if (detail.length > 0) {
                 const price = detail.find((item) => item.price)?.price || 0;
                 const qty = detail.find((item) => item.qty)?.qty || 0;
                 const result = price * qty;
-                return result.toFixed(2);
+
+                return this.formatNumber(result);
             }
             return "0.00";
         },
         calculateTotal(detail) {
-            const vat = parseFloat(this.calculateVAT(detail));
-            const subTotal = parseFloat(this.calculateSubTotal(detail));
+            if (detail.length > 0) {
+                const gst = detail.find((item) => item.gst)?.gst || 0;
+                const price = detail.find((item) => item.price)?.price || 0;
+                const qty = detail.find((item) => item.qty)?.qty || 0;
+                const result = (gst * price * qty) / 100 + price * qty;
 
-            const result = vat + subTotal;
+                return this.formatNumber(result);
+            }
+            return "0.00";
+        },
 
-            return result.toFixed(2);
+        calculateVATByCurrency(currency) {
+            const values = this.costDetailProducts
+                .flatMap((product) => Object.values(product)) // Mengambil array dari setiap nilai properti di objek
+                .filter((detail) =>
+                    detail.some((item) => item.currency === currency)
+                ) // Memfilter detail yang memiliki currency sesuai yang diinginkan
+                .map((detail) =>
+                    detail.reduce(
+                        (acc, item) => {
+                            // Filter dan tambahkan hanya jika nilai item tidak sama dengan 0
+                            if (
+                                item.gst !== undefined &&
+                                parseFloat(item.gst) !== 0
+                            ) {
+                                acc.gst += parseFloat(item.gst) || 0;
+                            }
+                            if (
+                                item.price !== undefined &&
+                                parseFloat(item.price) !== 0
+                            ) {
+                                acc.price += parseFloat(item.price) || 0;
+                            }
+                            if (
+                                item.qty !== undefined &&
+                                parseFloat(item.qty) !== 0
+                            ) {
+                                acc.qty += parseFloat(item.qty) || 0;
+                            }
+                            return acc;
+                        },
+                        { gst: 0, price: 0, qty: 0 }
+                    )
+                )
+                .filter(
+                    (item) =>
+                        item.gst !== 0 || item.price !== 0 || item.qty !== 0
+                );
+
+            console.log("values", values);
+
+            const vatResults = values.map((item) => ({
+                currency: currency,
+                vat: (item.gst * item.price * item.qty) / 100,
+            }));
+
+            console.log("vatResults", vatResults);
+
+            // Jika Anda perlu total VAT untuk semua currency, tambahkan langkah ini
+            const totalVAT = vatResults.reduce(
+                (acc, item) => acc + item.vat,
+                0
+            );
+
+            console.log("Total VAT for all currencies:", totalVAT);
+
+            return this.formatNumber(totalVAT);
+        },
+
+        calculateSubTotalByCurrency(currency) {
+            const values = this.costDetailProducts
+                .flatMap((product) => Object.values(product)) // Mengambil array dari setiap nilai properti di objek
+                .filter((detail) =>
+                    detail.some((item) => item.currency === currency)
+                ) // Memfilter detail yang memiliki currency sesuai yang diinginkan
+                .map((detail) =>
+                    detail.reduce(
+                        (acc, item) => {
+                            // Filter dan tambahkan hanya jika nilai item tidak sama dengan 0
+                            if (
+                                item.gst !== undefined &&
+                                parseFloat(item.gst) !== 0
+                            ) {
+                                acc.gst += parseFloat(item.gst) || 0;
+                            }
+                            if (
+                                item.price !== undefined &&
+                                parseFloat(item.price) !== 0
+                            ) {
+                                acc.price += parseFloat(item.price) || 0;
+                            }
+                            if (
+                                item.qty !== undefined &&
+                                parseFloat(item.qty) !== 0
+                            ) {
+                                acc.qty += parseFloat(item.qty) || 0;
+                            }
+                            return acc;
+                        },
+                        { gst: 0, price: 0, qty: 0 }
+                    )
+                )
+                .filter(
+                    (item) =>
+                        item.gst !== 0 || item.price !== 0 || item.qty !== 0
+                );
+
+            console.log("values", values);
+
+            const subTotalResults = values.map((item) => ({
+                currency: currency,
+                subTotalCalculation: item.price * item.qty,
+            }));
+
+            console.log("subTotalResults", subTotalResults);
+
+            // Jika Anda perlu total VAT untuk semua currency, tambahkan langkah ini
+            const subTotal = subTotalResults.reduce(
+                (acc, item) => acc + item.subTotalCalculation,
+                0
+            );
+
+            console.log("Subtotal for all currencies:", subTotal);
+
+            return this.formatNumber(subTotal);
+        },
+
+        calculateTotalByCurrency(currency) {
+            const values = this.costDetailProducts
+                .flatMap((product) => Object.values(product)) // Mengambil array dari setiap nilai properti di objek
+                .filter((detail) =>
+                    detail.some((item) => item.currency === currency)
+                ) // Memfilter detail yang memiliki currency sesuai yang diinginkan
+                .map((detail) =>
+                    detail.reduce(
+                        (acc, item) => {
+                            // Filter dan tambahkan hanya jika nilai item tidak sama dengan 0
+                            if (
+                                item.gst !== undefined &&
+                                parseFloat(item.gst) !== 0
+                            ) {
+                                acc.gst += parseFloat(item.gst) || 0;
+                            }
+                            if (
+                                item.price !== undefined &&
+                                parseFloat(item.price) !== 0
+                            ) {
+                                acc.price += parseFloat(item.price) || 0;
+                            }
+                            if (
+                                item.qty !== undefined &&
+                                parseFloat(item.qty) !== 0
+                            ) {
+                                acc.qty += parseFloat(item.qty) || 0;
+                            }
+                            return acc;
+                        },
+                        { gst: 0, price: 0, qty: 0 }
+                    )
+                )
+                .filter(
+                    (item) =>
+                        item.gst !== 0 || item.price !== 0 || item.qty !== 0
+                );
+
+            console.log("values", values);
+
+            const totalResults = values.map((item) => ({
+                currency: currency,
+                totalEach:
+                    (item.gst * item.price * item.qty) / 100 +
+                    item.price * item.qty,
+            }));
+
+            console.log("totalResults", totalResults);
+
+            // Jika Anda perlu total totalEach untuk semua currency, tambahkan langkah ini
+            const total = totalResults.reduce(
+                (acc, item) => acc + item.totalEach,
+                0
+            );
+
+            console.log("Total for all currencies:", total);
+
+            return this.formatNumber(total);
         },
 
         vendorDropdown() {
@@ -710,7 +1182,7 @@ export default {
                 (note) => note.id === noteId
             );
 
-            console.log('isi dari notetoedit', noteToEdit)
+            console.log("isi dari notetoedit", noteToEdit);
 
             this.showPopUpNoteWithData(noteToEdit);
         },
@@ -725,7 +1197,10 @@ export default {
             this.editingVendorData = [];
             this.popUpVendor = true;
 
-            console.log('nilai editingVendorData ketika di tambah', this.editingVendorData)
+            console.log(
+                "nilai editingVendorData ketika di tambah",
+                this.editingVendorData
+            );
         },
         closePopUpVendor() {
             this.popUpVendor = false;
@@ -756,12 +1231,48 @@ export default {
 
         showPopUpVendorWithData(vendorData) {
             this.editingVendorData = vendorData;
-            console.log('nilai editingVendorData ketika diedit', this.editingVendorData)
+            console.log(
+                "nilai editingVendorData ketika diedit",
+                this.editingVendorData
+            );
             this.popUpVendor = true;
         },
 
         closePopUpDeleteVendor() {
             this.popUpDeleteVendor = false;
+        },
+
+        receivedInvoice(id) {
+            this.terminateId = id;
+            this.popUpReceivedVendor = true;
+        },
+
+        closePopUpReceivedVendor() {
+            this.popUpReceivedVendor = false;
+        },
+
+        exportToPDF() {
+            html2pdf(document.getElementById("pdf"), {
+                margin: 10,
+                filename: "service_instruction.pdf",
+                image: { type: "jpeg", quality: 0.98 },
+                html2canvas: { scale: 5 }, //skala
+                jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+            });
+        },
+        getCurrentDate() {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, "0");
+            const month = String(today.getMonth() + 1).padStart(2, "0"); //bulan dari 0, ditambah 1jadinye
+            const year = today.getFullYear();
+
+            return `${day}/${month}/${year}`;
+        },
+        formatNumber(number) {
+            return number.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
         },
     },
 };
@@ -795,58 +1306,14 @@ export default {
     min-height: 100vh;
 }
 
-.container-title {
-    font-weight: 550;
-}
 
-.container-subtitle {
-    display: flex;
-    flex-direction: row;
-    padding-bottom: 1em;
-}
-
-.container-subtitle .subtitle {
-    width: 50%;
-    display: flex;
-    flex-direction: row;
-}
-
-.container-subtitle .subtitle-buttons {
-    display: flex;
-    justify-content: flex-end;
-    width: 50%;
-    gap: 30px;
-}
-
-.subtitle .vendor-management {
-    padding-right: 0.55em;
-    opacity: 0.7;
-}
-
-.subtitle .party-instruction {
-    padding-left: 0.55em;
-    opacity: 1;
-    transition: ease-in-out;
-}
-
-.subtitle .vendor-management:hover,
-.subtitle .party-instruction:hover {
-    cursor: pointer;
-    transform: scale(1.01);
-    opacity: 1;
-    text-decoration: underline;
-    color: #662549;
-}
-
-.subtitle-buttons .email-button,
-.subtitle-buttons .export-button {
+.export-button {
     border: 0.6px solid #ccc;
     background-color: white;
     font-size: 90%;
     font-weight: 400;
 }
 
-.email-button:hover,
 .export-button:hover {
     font-weight: 500;
     background-color: #e8bcb9;
@@ -950,11 +1417,18 @@ export default {
     font-size: larger;
     font-weight: bolder;
 }
+.cost-detail-table tbody tr:nth-child(even) {
+    background-color: #ccc;
+}
 
 .table-title {
     font-size: larger;
     font-weight: bolder;
     text-align: center;
+}
+
+.table-by-currency td {
+    background-color: var(---sixth-color);
 }
 
 .desc-cell {
@@ -968,22 +1442,12 @@ export default {
 }
 
 .non-desc-cell {
-    text-align: center;
+    text-align: center !important;
     width: 11%;
 }
 
 .table-calculation {
     text-align: center;
-}
-.attachment-notes {
-    display: flex;
-    flex-direction: row;
-    padding-top: 1.5rem;
-}
-
-.attachment-notes .attachment,
-.attachment-notes .notes {
-    width: 50%;
 }
 
 .attachment-button,
@@ -1005,6 +1469,36 @@ export default {
 .vendor-dropdown .vendor-dropdown-button:active {
     color: #666;
     box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+.attachment-notes {
+    display: flex;
+    flex-direction: row;
+    padding-top: 1.5rem;
+}
+
+.attachment-notes .terminated,
+.attachment-notes .notes {
+    width: 50%;
+}
+
+.terminated-info,
+.terminated-attachment {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.terminated-attachment {
+    margin-top: 0.1rem;
+}
+
+.terminated-message {
+    background-color: #f5f7f9;
+    color: black;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    width: 90%;
+    border-radius: 20px;
 }
 
 .notes-card {
@@ -1358,6 +1852,95 @@ export default {
     padding: 0.5rem;
     border-radius: 20px;
     background-color: #f0eded;
+}
+
+.convert-to-pdf {
+    z-index: 999;
+    display: none;
+}
+
+.title-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+}
+
+.company-container {
+    width: 60%;
+    display: flex;
+    background-color: white;
+    justify-content: flex-start;
+    align-items: flex-start;
+    box-sizing: none;
+}
+
+.instruction-container {
+    background-color: white;
+    width: 40%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    font-size: 1.5rem;
+    border-left: 5px solid #cae9f3;
+    padding: 1rem;
+}
+
+.image-container {
+    background-color: transparent;
+    padding: 1rem;
+}
+.image-container img {
+    width: 50%;
+}
+
+.table-1-container {
+    padding-top: 1rem;
+    background-color: white;
+}
+
+.table-1-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+
+    font-family: "Montserrat", sans-serif;
+}
+
+.table-1-container table tr td {
+    border: 0.6px solid black;
+    padding: 5px;
+    text-align: left;
+}
+
+.table-1-container table tr td:nth-child(odd) {
+    font-weight: 600;
+}
+
+.table-1-container table tr td:nth-child(even) {
+    font-weight: 400;
+}
+
+.table-2-container {
+    padding-top: 1rem;
+}
+
+.table-2-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    font-family: "Montserrat", sans-serif;
+}
+
+.table-2-container table tr td {
+    border: 0.6px solid black;
+    padding: 5px;
+    text-align: left;
+}
+
+.table-2-container table thead tr td {
+    font-weight: 600;
+    text-align: center;
 }
 
 @media (max-width: 760px) {

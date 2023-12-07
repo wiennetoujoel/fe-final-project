@@ -1,4 +1,4 @@
-<template @click="closePopUpNote">
+<template @click="closePopUpDeleteVendor">
     <div class="note-overlay">
         <div class="container">
             <div class="warning">

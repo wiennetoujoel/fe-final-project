@@ -4,7 +4,7 @@
     <div class="subtitle">
       <div class="vendor-management">Vendor Management</div>
       <span>&gt;</span>
-      <div class="party-instruction">3rd Party Instruction</div>
+      <div class="party-instruction" @click="navigateToHome">3rd Party Instruction</div>
     </div>
     <!-- <BtnEmailExcel /> -->
   </div>
@@ -15,6 +15,14 @@ import BtnEmailExcel from './BtnEmailExcel.vue';
 export default {
   components: {
     BtnEmailExcel,
+  },
+  methods:{
+    navigateToHome() {
+            this.$router.push({
+                path: "/home",
+                name: "home"
+            });
+        },
   }
 }
 </script>
